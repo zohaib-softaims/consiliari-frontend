@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import AuthCallback from "./pages/AuthCallback";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import UpdatePasswordPage from "./pages/UpdatePasswordPage";
+import ConfirmEmailPage from "./pages/ConfirmEmailPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/auth/google/callback" element={<AuthCallback />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/auth/reset-password" element={<UpdatePasswordPage />} />
+          <Route path="/auth/confirm-email" element={<ConfirmEmailPage />} />
         </Routes>
       </Router>
 
