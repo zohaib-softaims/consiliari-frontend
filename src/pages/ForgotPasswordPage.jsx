@@ -10,6 +10,7 @@ import AuthInputField from "../components/shared/AuthInputField";
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);
@@ -25,12 +26,16 @@ function ForgotPasswordPage() {
       toast.error("Please fix the errors in the form.");
       return;
     }
+
+    setLoading(true);
     try {
       const response = await apiClient.post("/auth/reset-password", { email });
       toast.success(response?.message || "Password reset email sent. Please check your inbox.");
     } catch (err) {
       const errorMessage = err?.message || "An error occurred. Please try again.";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,9 +65,19 @@ function ForgotPasswordPage() {
             />
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              disabled={loading}
+              className={`w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              SEND RESET LINK
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin mr-2"></div>
+                  Sending Reset Link...
+                </div>
+              ) : (
+                "SEND RESET LINK"
+              )}
             </button>
           </form>
 

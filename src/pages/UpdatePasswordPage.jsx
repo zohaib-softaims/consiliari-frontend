@@ -9,6 +9,7 @@ import PasswordInputField from "../components/shared/PasswordInputField";
 
 function UpdatePasswordPage() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -37,7 +38,7 @@ function UpdatePasswordPage() {
       setErrors(fieldErrors);
       return;
     }
-
+    setLoading(true);
     try {
       const response = await apiClient.post("/auth/reset-password-confirm", {
         url: callbackUrl,
@@ -53,6 +54,8 @@ function UpdatePasswordPage() {
     } catch (err) {
       const errorMessage = err?.message || "An error occurred while resetting password.";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,8 +66,8 @@ function UpdatePasswordPage() {
       <div className="flex flex-col items-center w-full max-w-md mt-20">
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Reset Your Password</h2>
-          <p className="text-gray-600 text-sm">Enter your new password below.</p>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Change Your Password</h2>
+          <p className="text-gray-600 text-sm">Please enter your new password below to update your account.</p>
         </div>
 
         {/* Main Card */}
@@ -89,9 +92,19 @@ function UpdatePasswordPage() {
             />
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              disabled={loading}
+              className={`w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              RESET PASSWORD
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin mr-2"></div>
+                  Updating Password...
+                </div>
+              ) : (
+                "Reset Password"
+              )}
             </button>
           </form>
         </div>

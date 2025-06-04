@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import GoogleIcon from "../../public/icons/GoogleIcon";
-import LinkedinIcon from "../../public/icons/LinkedinIcon";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/apiClient";
 import { loginSchema } from "../validations/authValidations";
 import { validateForm } from "../utils/validateForm";
@@ -9,22 +7,16 @@ import { toast } from "react-toastify";
 import AuthHeader from "../components/shared/AuthHeader";
 import AuthInputField from "../components/shared/AuthInputField";
 import PasswordInputField from "../components/shared/PasswordInputField";
+import SocialLogins from "../components/shared/SocialLogins";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
-
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await api.get("/auth/google");
-      window.location.href = response?.data?.url;
-    } catch (error) {
-      toast.error(error?.message || "Failed to initiate Google login.");
-    }
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -43,11 +35,17 @@ export default function LoginPage() {
       return;
     }
 
+    setLoading(true);
     try {
       const response = await api.post("/auth/login", formData);
       toast.success(response?.message || "Login successful!");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } catch (error) {
       toast.error(error?.message || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -102,9 +100,19 @@ export default function LoginPage() {
             />
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              disabled={loading}
+              className={`w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Login
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin mr-2"></div>
+                  Logging in...
+                </div>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
 
@@ -115,24 +123,7 @@ export default function LoginPage() {
           </div>
 
           {/* Social Login Buttons */}
-          <div className="flex flex-row space-x-2">
-            <button
-              onClick={handleGoogleLogin}
-              type="button"
-              className="w-full flex items-center justify-center px-4 py-2 border border-[#e2e8f0] rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <GoogleIcon />
-              Google
-            </button>
-
-            <button
-              type="button"
-              className="w-full flex items-center justify-center px-4 py-2 border border-[#e2e8f0] rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <LinkedinIcon />
-              LinkedIn
-            </button>
-          </div>
+          <SocialLogins />
 
           {/* Terms of Service */}
           <div className="mt-6 text-center">

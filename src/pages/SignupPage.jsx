@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import GoogleIcon from "../../public/icons/GoogleIcon";
-import LinkedinIcon from "../../public/icons/LinkedinIcon";
+import { Link, useNavigate } from "react-router-dom";
 import { signupSchema } from "../validations/authValidations";
 import { validateForm } from "../utils/validateForm";
 import { toast } from "react-toastify";
@@ -9,14 +7,17 @@ import apiClient from "../utils/apiClient";
 import AuthHeader from "../components/shared/AuthHeader";
 import AuthInputField from "../components/shared/AuthInputField";
 import PasswordInputField from "../components/shared/PasswordInputField";
+import SocialLogins from "../components/shared/SocialLogins";
 
 export default function SignupPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -35,12 +36,18 @@ export default function SignupPage() {
       return;
     }
 
+    setLoading(true);
     try {
       const response = await apiClient.post("/auth/signup", formData);
       toast.success(response?.message || "Signup successful");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       console.error("Signup error:", error);
       toast.error(error.message || "Signup failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,9 +112,19 @@ export default function SignupPage() {
             />
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              disabled={loading}
+              className={`w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              Create a Account
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin mr-2"></div>
+                  Creating Account...
+                </div>
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
 
@@ -119,23 +136,7 @@ export default function SignupPage() {
           </div>
 
           {/* Social Login Buttons */}
-          <div className="flex flex-row space-x-2">
-            <button
-              type="button"
-              className="w-full flex items-center justify-center px-4 py-2 border border-[#e2e8f0] rounded-md  text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <GoogleIcon />
-              Google
-            </button>
-
-            <button
-              type="button"
-              className="w-full flex items-center justify-center px-4 py-2 border border-[#e2e8f0] rounded-md  text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <LinkedinIcon />
-              LinkedIn
-            </button>
-          </div>
+          <SocialLogins />
 
           {/* Terms of Service */}
           <div className="mt-6 text-center">
