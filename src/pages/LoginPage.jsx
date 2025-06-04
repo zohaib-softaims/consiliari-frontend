@@ -4,25 +4,53 @@ import { Link } from "react-router-dom";
 import GoogleIcon from "../../public/icons/GoogleIcon";
 import LinkedinIcon from "../../public/icons/LinkedinIcon";
 import api from "../utils/apiClient";
+import { loginSchema } from "../validations/authValidations";
+import { validateForm } from "../utils/validateForm";
+import { toast } from "react-toastify";
+
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleGoogleLogin = async () => {
-    const response = await api.get("/auth/google");
-    console.log("response is", response);
-    window.location.href = response?.data?.url;
+    try {
+      const response = await api.get("/auth/google");
+      window.location.href = response?.data?.url;
+    } catch (error) {
+      console.error("Error during Google login initiation:", error);
+      toast.error(error.response?.data?.message || "Failed to initiate Google login.");
+    }
   };
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setErrors({ ...errors, [e.target.name]: undefined });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+
+    const fieldErrors = validateForm(loginSchema, formData);
+    console.log("field errors", fieldErrors);
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
+      return;
+    }
+
+    try {
+      const response = await api.post("/auth/login", formData);
+      toast.success(response?.message || "Login successful!");
+    } catch (error) {
+      toast.error(error?.message || "Login failed. Please try again.");
+    }
+  };
   return (
     <div className="min-h-screen w-full overflow-x-hidden flex flex-col items-center justify-center">
       {/* Logo */}
@@ -60,7 +88,7 @@ export default function LoginPage() {
         {/* Main Card */}
         <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           {/* Form */}
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -72,9 +100,12 @@ export default function LoginPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className={`w-full px-3 py-2 border ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                 placeholder=""
               />
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
 
             {/* Password */}
@@ -83,9 +114,9 @@ export default function LoginPage() {
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <a href="#" className="text-sm text-indigo-600 hover:text-indigo-500">
+                <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
                   Forgot password?
-                </a>
+                </Link>
               </div>
               <div className="relative">
                 <input
@@ -94,7 +125,9 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className={`w-full px-3 py-2 pr-10 border ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                   placeholder=""
                 />
                 <button
@@ -105,6 +138,7 @@ export default function LoginPage() {
                   {showPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
                 </button>
               </div>
+              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
 
             {/* Submit Button */}

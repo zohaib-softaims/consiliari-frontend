@@ -1,26 +1,51 @@
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Mail, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 import GoogleIcon from "../../public/icons/GoogleIcon";
 import LinkedinIcon from "../../public/icons/LinkedinIcon";
+import { signupSchema } from "../validations/authValidations";
+import { validateForm } from "../utils/validateForm";
+import { toast } from "react-toastify";
+import apiClient from "../utils/apiClient";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
+    full_name: "",
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setErrors({ ...errors, [e.target.name]: undefined });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+
+    const fieldErrors = validateForm(signupSchema, formData);
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
+      return;
+    }
+
+    try {
+      const response = await apiClient.post("/auth/signup", formData);
+      toast.success(response?.message || "Signup successful");
+    } catch (error) {
+      console.error("Signup error:", error);
+      toast.error(error.message || "Signup failed. Please try again.");
+    }
+  };
+  console.log("errpr", errors);
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
       {/* Logo */}
       <div className="fixed top-0 left-0 ml-8 p-3">
         <span className="bg-gradient-to-r from-[#2F279C] to-[#766EE4] bg-clip-text text-3xl font-bold text-transparent">
@@ -56,21 +81,24 @@ export default function SignupPage() {
         {/* Main Card */}
         <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           {/* Form */}
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Full Name */}
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">
                 Full Name
               </label>
               <input
                 type="text"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
+                id="full_name"
+                name="full_name"
+                value={formData.full_name}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className={`w-full px-3 py-2 border ${
+                  errors.full_name ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                 placeholder=""
               />
+              {errors.full_name && <p className="text-red-500 text-xs mt-1">{errors.full_name}</p>}
             </div>
 
             {/* Email */}
@@ -84,9 +112,12 @@ export default function SignupPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className={`w-full px-3 py-2 border ${
+                  errors.email ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                 placeholder=""
               />
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
 
             {/* Password */}
@@ -103,7 +134,9 @@ export default function SignupPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className={`w-full px-3 py-2 pr-10 border ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
                   placeholder=""
                 />
                 <button
@@ -114,6 +147,7 @@ export default function SignupPage() {
                   {showPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
                 </button>
               </div>
+              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
 
             {/* Submit Button */}
