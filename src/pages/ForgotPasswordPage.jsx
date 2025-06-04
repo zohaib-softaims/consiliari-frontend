@@ -35,18 +35,18 @@ function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
+    <div className="min-h-screen flex flex-col items-center justify-center">
       <AuthHeader />
 
       <div className="flex flex-col items-center w-full max-w-md mt-20">
         {/* Hero Section */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Forgot Your Password?</h2>
-          <p className="text-gray-600 text-sm">Enter your email address to receive a reset link.</p>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Enter your email</h2>
+          <p className="text-gray-600 text-sm">Enter your email so we can send you a recovery email</p>
         </div>
 
         {/* Main Card */}
-        <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div className="w-full bg-white rounded-lg shadow-sm border border-[#e2e8f0] p-8 mb-4">
           <form className="space-y-4" onSubmit={handleSubmit}>
             <AuthInputField
               label="Email"
@@ -56,7 +56,7 @@ function ForgotPasswordPage() {
               onChange={handleInputChange}
               error={errors.email}
               required
-              placeholder="Your email address"
+              placeholder="johnwilliam@gmail.com"
             />
             <button
               type="submit"

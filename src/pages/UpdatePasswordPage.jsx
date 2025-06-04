@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../utils/apiClient";
 import { resetPasswordSchema } from "../validations/authValidations";
@@ -13,20 +13,7 @@ function UpdatePasswordPage() {
     password: "",
     confirmPassword: "",
   });
-  const [callbackUrl, setCallbackUrl] = useState(null);
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const url = window.location.href;
-    if (url) {
-      setCallbackUrl(url);
-      setLoading(false);
-    } else {
-      toast.error("Password reset link is invalid or expired.");
-      setLoading(false);
-    }
-  }, [navigate]);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -39,15 +26,15 @@ function UpdatePasswordPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
+    const callbackUrl = window.location.href;
     if (!callbackUrl) {
-      toast.error("Cannot reset password: Callback URL is missing.");
+      toast.error("Cannot reset password");
       return;
     }
 
     const fieldErrors = validateForm(resetPasswordSchema, formData);
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
-      toast.error("Please fix the errors in the form.");
       return;
     }
 
@@ -62,33 +49,17 @@ function UpdatePasswordPage() {
         setTimeout(() => {
           navigate("/login");
         }, 3000);
-      } else {
-        const backendError = response?.message || "Failed to reset password.";
-        toast.error(backendError);
       }
     } catch (err) {
-      console.error("Error resetting password:", err);
       const errorMessage = err?.message || "An error occurred while resetting password.";
       toast.error(errorMessage);
     }
   };
 
-  // Show loading if URL is not captured immediately
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  // Render the form if URL is captured and no major error occurred
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
-      {/* Logo */}
+    <div className="min-h-screen flex flex-col items-center justify-center">
       <AuthHeader />
 
-      {/* Centered Content Wrapper */}
       <div className="flex flex-col items-center w-full max-w-md mt-20">
         {/* Header */}
         <div className="text-center mb-6">
@@ -97,10 +68,8 @@ function UpdatePasswordPage() {
         </div>
 
         {/* Main Card */}
-        <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          {/* Form */}
+        <div className="w-full bg-white rounded-lg shadow-sm border border-[#e2e8f0] p-8 mb-4">
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* New Password */}
             <PasswordInputField
               label="New Password"
               name="password"
@@ -110,7 +79,6 @@ function UpdatePasswordPage() {
               required
             />
 
-            {/* Confirm Password */}
             <PasswordInputField
               label="Confirm New Password"
               name="confirmPassword"
@@ -119,11 +87,6 @@ function UpdatePasswordPage() {
               error={errors.confirmPassword}
               required
             />
-
-            {/* General API Error Display below form - only show if no specific field errors */}
-            {/* Removed direct error state display here, relying on toast and field-specific errors */}
-
-            {/* Submit Button */}
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
