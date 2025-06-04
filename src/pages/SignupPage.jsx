@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, EyeOff, Mail, Linkedin } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import GoogleIcon from "../../public/icons/GoogleIcon";
 import LinkedinIcon from "../../public/icons/LinkedinIcon";
@@ -43,7 +43,7 @@ export default function SignupPage() {
       toast.error(error.message || "Signup failed. Please try again.");
     }
   };
-  console.log("errpr", errors);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
       {/* Logo */}

@@ -43,6 +43,7 @@ function UpdatePasswordPage() {
     setErrors({}); // Clear previous errors
     // Clear message and error states related to API calls before new submission
     // setMessage(''); // If you had a message state for success
+    // setError(''); // Removed direct error state management, relying on toast and field errors
 
     if (!callbackUrl) {
       toast.error("Cannot reset password: Callback URL is missing.");
@@ -59,31 +60,28 @@ function UpdatePasswordPage() {
     // If validation passes, call the backend API with URL and new password
     try {
       const response = await apiClient.post("/auth/reset-password-confirm", {
-        url: callbackUrl, // Send the full callback URL
-        newPassword: formData.password, // Send the new password
+        url: callbackUrl,
+        newPassword: formData.password,
       });
 
-      if (response.data && response.data.success) {
-        toast.success(response.data?.message || "Your password has been reset successfully. Redirecting to login...");
+      if (response.success) {
+        toast.success(response?.message || "Your password has been reset successfully. Redirecting to login...");
         // Redirect to login page after a short delay
         setTimeout(() => {
           navigate("/login");
         }, 3000);
       } else {
-        // Handle backend errors or unsuccessful update
-        const backendError = response.data?.message || "Failed to reset password.";
-        setError(backendError); // Set error for display below form
+        const backendError = response?.message || "Failed to reset password.";
         toast.error(backendError);
       }
     } catch (err) {
       console.error("Error resetting password:", err);
-      const errorMessage = err.response?.data?.message || "An error occurred while resetting password.";
-      setError(errorMessage); // Set error for display below form
+      const errorMessage = err?.message || "An error occurred while resetting password.";
       toast.error(errorMessage);
     }
   };
 
-  // Show loading or error if URL is not captured immediately
+  // Show loading if URL is not captured immediately
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -92,7 +90,7 @@ function UpdatePasswordPage() {
     );
   }
 
-  // Render the form if URL is captured
+  // Render the form if URL is captured and no major error occurred
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
       {/* Logo */}
@@ -126,9 +124,7 @@ function UpdatePasswordPage() {
                 value={formData.password}
                 onChange={handleInputChange}
                 required
-                className={`w-full px-3 py-2 border ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
+                className={`w-full px-3 py-2 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
               />
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
@@ -143,19 +139,20 @@ function UpdatePasswordPage() {
                 id="confirmPassword"
                 name="confirmPassword"
                 value={formData.confirmPassword}
-                onChange={handleConfirmPasswordChange}
+                onChange={handleInputChange}
                 required
-                className={`w-full px-3 py-2 border ${
-                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
+                className={`w-full px-3 py-2 border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
               />
               {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
             </div>
 
+            {/* General API Error Display below form - only show if no specific field errors */}
+            {/* Removed direct error state display here, relying on toast and field-specific errors */}
+
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] bg-clip-text text-transparent py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+              className="w-full bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
             >
               RESET PASSWORD
             </button>

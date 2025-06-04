@@ -21,8 +21,7 @@ export default function LoginPage() {
       const response = await api.get("/auth/google");
       window.location.href = response?.data?.url;
     } catch (error) {
-      console.error("Error during Google login initiation:", error);
-      toast.error(error.response?.data?.message || "Failed to initiate Google login.");
+      toast.error(error?.message || "Failed to initiate Google login.");
     }
   };
   const handleInputChange = (e) => {
@@ -36,9 +35,7 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-
     const fieldErrors = validateForm(loginSchema, formData);
-    console.log("field errors", fieldErrors);
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       return;

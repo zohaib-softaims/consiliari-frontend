@@ -1,49 +1,38 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import GoogleIcon from "../../public/icons/GoogleIcon"; // Keep imports for structure similarity, though not used in this specific form
-import LinkedinIcon from "../../public/icons/LinkedinIcon"; // Keep imports for structure similarity, though not used in this specific form
-import apiClient from "../utils/apiClient"; // Assuming apiClient is set up here
-import { forgotPasswordSchema } from "../validations/authValidations"; // Import reset password schema
-import { validateForm } from "../utils/validateForm"; // Import validateForm utility
-import { toast } from "react-toastify"; // Import toast
+import apiClient from "../utils/apiClient";
+import { forgotPasswordSchema } from "../validations/authValidations";
+import { validateForm } from "../utils/validateForm";
+import { toast } from "react-toastify";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [errors, setErrors] = useState({}); // State to hold validation errors
+  const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);
-    // Clear validation error for the field on input change
-    setErrors({ ...errors, email: undefined });
+    setErrors({ ...errors, email: "" });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); // Clear previous errors
-    setMessage(""); // Clear previous messages
-    setError(""); // Clear previous errors
-
+    setErrors({});
     const fieldErrors = validateForm(forgotPasswordSchema, { email });
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       toast.error("Please fix the errors in the form.");
       return;
     }
-    // If validation passes, call the backend API
+
     try {
       const response = await apiClient.post("/auth/reset-password", { email });
       toast.success(response?.message || "Password reset email sent. Please check your inbox.");
-      setMessage(response?.message || "Password reset email sent. Please check your inbox."); // Update message state for display below form
     } catch (err) {
-      console.error("Error sending password reset email:", err);
       const errorMessage = err?.message || "An error occurred. Please try again.";
-      setError(errorMessage); // Update error state for display below form
       toast.error(errorMessage);
     }
   };
-  console.log("errr", errors);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
       {/* Logo */}
@@ -84,10 +73,6 @@ function ForgotPasswordPage() {
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
-
-            {/* Message/Error Display below form */}
-            {message && <p className="text-sm text-green-600 text-center">{message}</p>}
-            {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
             {/* Submit Button */}
             <button

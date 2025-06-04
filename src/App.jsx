@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
-import AuthCallback from './pages/AuthCallback';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import UpdatePasswordPage from './pages/UpdatePasswordPage';
+import AuthCallback from "./pages/AuthCallback";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import UpdatePasswordPage from "./pages/UpdatePasswordPage";
 
 function App() {
   return (
