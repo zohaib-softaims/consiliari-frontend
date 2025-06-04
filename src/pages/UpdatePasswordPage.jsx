@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../utils/apiClient"; // Assuming apiClient is set up here
-import { resetPasswordSchema } from "../validations/authValidations"; // Import updated reset password schema
-import { validateForm } from "../utils/validateForm"; // Import validateForm utility
-import { toast } from "react-toastify"; // Import toast
+import apiClient from "../utils/apiClient";
+import { resetPasswordSchema } from "../validations/authValidations";
+import { validateForm } from "../utils/validateForm";
+import { toast } from "react-toastify";
+import AuthHeader from "../components/shared/AuthHeader";
+import PasswordInputField from "../components/shared/PasswordInputField";
 
 function UpdatePasswordPage() {
   const navigate = useNavigate();
@@ -11,21 +13,18 @@ function UpdatePasswordPage() {
     password: "",
     confirmPassword: "",
   });
-  const [callbackUrl, setCallbackUrl] = useState(null); // State to store the full callback URL
-  const [errors, setErrors] = useState({}); // State to hold validation errors
-  const [loading, setLoading] = useState(true); // Loading state while capturing URL
+  const [callbackUrl, setCallbackUrl] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  // Capture full callback URL on component mount
   useEffect(() => {
     const url = window.location.href;
     if (url) {
       setCallbackUrl(url);
       setLoading(false);
     } else {
-      toast.error("Password reset link is invalid or expired."); // Use toast for immediate feedback
+      toast.error("Password reset link is invalid or expired.");
       setLoading(false);
-      // Optionally redirect after showing error
-      // setTimeout(() => navigate('/forgot-password'), 3000);
     }
   }, [navigate]);
 
@@ -34,17 +33,12 @@ function UpdatePasswordPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    // Clear validation error for the field on input change
     setErrors({ ...errors, [e.target.name]: undefined });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); // Clear previous errors
-    // Clear message and error states related to API calls before new submission
-    // setMessage(''); // If you had a message state for success
-    // setError(''); // Removed direct error state management, relying on toast and field errors
-
+    setErrors({});
     if (!callbackUrl) {
       toast.error("Cannot reset password: Callback URL is missing.");
       return;
@@ -57,7 +51,6 @@ function UpdatePasswordPage() {
       return;
     }
 
-    // If validation passes, call the backend API with URL and new password
     try {
       const response = await apiClient.post("/auth/reset-password-confirm", {
         url: callbackUrl,
@@ -66,7 +59,6 @@ function UpdatePasswordPage() {
 
       if (response.success) {
         toast.success(response?.message || "Your password has been reset successfully. Redirecting to login...");
-        // Redirect to login page after a short delay
         setTimeout(() => {
           navigate("/login");
         }, 3000);
@@ -94,11 +86,7 @@ function UpdatePasswordPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
       {/* Logo */}
-      <div className="fixed top-0 left-0 ml-8 p-3">
-        <span className="bg-gradient-to-r from-[#2F279C] to-[#766EE4] bg-clip-text text-3xl font-bold text-transparent">
-          Consili{"\u0101"}r{"\u012B"}.ai
-        </span>
-      </div>
+      <AuthHeader />
 
       {/* Centered Content Wrapper */}
       <div className="flex flex-col items-center w-full max-w-md mt-20">
@@ -113,38 +101,24 @@ function UpdatePasswordPage() {
           {/* Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* New Password */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                New Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-                className={`w-full px-3 py-2 border ${errors.password ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-              />
-              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
-            </div>
+            <PasswordInputField
+              label="New Password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              error={errors.password}
+              required
+            />
 
             {/* Confirm Password */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                required
-                className={`w-full px-3 py-2 border ${errors.confirmPassword ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-              />
-              {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
-            </div>
+            <PasswordInputField
+              label="Confirm New Password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              error={errors.confirmPassword}
+              required
+            />
 
             {/* General API Error Display below form - only show if no specific field errors */}
             {/* Removed direct error state display here, relying on toast and field-specific errors */}
