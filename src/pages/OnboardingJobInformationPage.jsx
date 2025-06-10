@@ -3,6 +3,8 @@ import { ChevronDown } from "lucide-react";
 import ProgressBar from "../components/onboarding-components/ProgressBar";
 import AuthHeader from "../components/shared/AuthHeader";
 import AuthInputField from "../components/shared/AuthInputField";
+import SelectInputField from "../components/shared/SelectInputField";
+import { industries, time_in_years } from "../constants/onboardingData";
 const OnboardingJobInformationPage = () => {
   const [formData, setFormData] = useState({
     jobTitle: "",
@@ -22,7 +24,7 @@ const OnboardingJobInformationPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <AuthHeader />
-      <div className="max-w-2xl mx-auto pt-8 px-6">
+      <div className="max-w-3xl mx-auto pt-8 px-6">
         <div className="text-center mt-8 mb-8">
           <div className="text-sm text-[#2f279c] mb-3">Step 1/2</div>
           <h2 className="text-2xl font-semibold text-gray-900 mb-8">Your Career Foundation</h2>
@@ -61,47 +63,22 @@ const OnboardingJobInformationPage = () => {
             />
 
             {/* Industry */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
-              <div className="relative">
-                <select
-                  value={formData.industry}
-                  onChange={(e) => handleInputChange("industry", e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white text-gray-400"
-                >
-                  <option value="">What industry are you in?</option>
-                  <option value="technology">Technology</option>
-                  <option value="healthcare">Healthcare</option>
-                  <option value="finance">Finance</option>
-                  <option value="education">Education</option>
-                  <option value="retail">Retail</option>
-                  <option value="manufacturing">Manufacturing</option>
-                  <option value="consulting">Consulting</option>
-                  <option value="other">Other</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
+            <SelectInputField
+              label={"Industry"}
+              name={"industry"}
+              placeholder="What industry are you in?"
+              value={"IT"}
+              options={industries}
+            />
 
             {/* Time in Current/Most Recent Role */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Time in Current/Most Recent Role</label>
-              <div className="relative">
-                <select
-                  value={formData.timeInRole}
-                  onChange={(e) => handleInputChange("timeInRole", e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white text-gray-400"
-                >
-                  <option value="">How long have you been in your current or most recent role?</option>
-                  <option value="less-than-1-year">Less than 1 year</option>
-                  <option value="1-2-years">1-2 years</option>
-                  <option value="2-5-years">2-5 years</option>
-                  <option value="5-10-years">5-10 years</option>
-                  <option value="more-than-10-years">More than 10 years</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
+            <SelectInputField
+              label={"Time in Current/Most Recent Role"}
+              name={"industry"}
+              placeholder="How long have you been in your current or most recent specific position?"
+              value={""}
+              options={time_in_years}
+            />
 
             {/* Employment Type */}
             <div>
