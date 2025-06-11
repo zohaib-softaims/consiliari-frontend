@@ -10,57 +10,76 @@ import {
   teamPerformanceOptions,
 } from "../constants/onboardingData";
 
-export const goalsSchema = z.object({
-  short_term_goal: z
-    .string({
-      required_error: "Short term goal is required",
-      invalid_type_error: "Short term goal must be a string",
-    })
-    .min(1, "Short term goal cannot be empty")
-    .max(1000, "Short term goal is too long"),
+export const goalsSchema = z
+  .object({
+    short_term_goal: z
+      .string({
+        required_error: "Short term goal is required",
+        invalid_type_error: "Short term goal must be a string",
+      })
+      .max(1000, "Short term goal is too long")
+      .optional(), // Make it optional at first
 
-  long_term_goal: z
-    .string({
-      required_error: "Long term goal is required",
-      invalid_type_error: "Long term goal must be a string",
-    })
-    .min(1, "Long term goal cannot be empty")
-    .max(1000, "Long term goal is too long"),
+    long_term_goal: z
+      .string({
+        required_error: "Long term goal is required",
+        invalid_type_error: "Long term goal must be a string",
+      })
+      .max(1000, "Long term goal is too long")
+      .optional(),
 
-  no_goals: z.boolean({
-    required_error: "No goals selection is required",
-    invalid_type_error: "No goals must be a boolean",
-  }),
+    no_goals: z.boolean({
+      required_error: "No goals selection is required",
+      invalid_type_error: "No goals must be a boolean",
+    }),
 
-  readiness_for_next_goal: z.enum(readinessForNextRoleOptions, {
-    required_error: "Readiness for next goal is required",
-    invalid_type_error: "Invalid readiness level",
-  }),
+    readiness_for_next_goal: z.enum(readinessForNextRoleOptions, {
+      required_error: "Readiness for next goal is required",
+      invalid_type_error: "Invalid readiness level",
+    }),
 
-  development_for_next_role: z
-    .string({
-      required_error: "Development for next role is required",
-      invalid_type_error: "Development for next role must be a string",
-    })
-    .min(1, "Development for next role cannot be empty")
-    .max(1000, "Development for next role is too long"),
+    development_for_next_role: z
+      .string({
+        required_error: "Development for next role is required",
+        invalid_type_error: "Development for next role must be a string",
+      })
+      .min(1, "Development for next role cannot be empty")
+      .max(1000, "Development for next role is too long"),
 
-  challenges_for_goals: z
-    .string({
-      required_error: "Challenges for goals is required",
-      invalid_type_error: "Challenges for goals must be a string",
-    })
-    .min(1, "Challenges for goals cannot be empty")
-    .max(1000, "Challenges for goals is too long"),
+    challenges_for_goals: z
+      .string({
+        required_error: "Challenges for goals is required",
+        invalid_type_error: "Challenges for goals must be a string",
+      })
+      .min(1, "Challenges for goals cannot be empty")
+      .max(1000, "Challenges for goals is too long"),
 
-  clarity_on_overcoming_obstacle: z
-    .number({
-      required_error: "Clarity rating is required",
-      invalid_type_error: "Clarity must be a number between 1 and 5",
-    })
-    .min(1, "Minimum value is 1")
-    .max(5, "Maximum value is 5"),
-});
+    clarity_on_overcoming_obstacle: z
+      .number({
+        required_error: "Clarity rating is required",
+        invalid_type_error: "Clarity must be a number between 1 and 5",
+      })
+      .min(1, "Minimum value is 1")
+      .max(5, "Maximum value is 5"),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.no_goals) {
+      if (!data.short_term_goal || data.short_term_goal.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["short_term_goal"],
+          message: "Short term goal is required",
+        });
+      }
+      if (!data.long_term_goal || data.long_term_goal.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["long_term_goal"],
+          message: "Long term goal is required",
+        });
+      }
+    }
+  });
 
 const personalAlignmentSchema = z.object({
   rating: z

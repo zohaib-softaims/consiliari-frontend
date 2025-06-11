@@ -10,7 +10,7 @@ import { goalsSchema } from "../validations/careerBluePrintValidations";
 import { validateForm } from "../utils/validateForm";
 import { readinessForNextRoleOptions } from "../constants/onboardingData";
 
-const OnboardingCareerBlueprintPage = () => {
+const OnboardingGoalsPage = () => {
   const goalsState = useOnboardingStore((state) => state.onboardingState.career_blueprint.goals);
   const updateSection = useOnboardingStore((state) => state.updateSection);
   const setStep = useOnboardingStore((state) => state.setStep);
@@ -144,7 +144,6 @@ const OnboardingCareerBlueprintPage = () => {
               error={errors.clarity_on_overcoming_obstacle}
               minLabel="No clarity at all"
               maxLabel="Total clarity"
-              required
             />
           </div>
         </div>
@@ -161,4 +160,4 @@ const OnboardingCareerBlueprintPage = () => {
   );
 };
 
-export default OnboardingCareerBlueprintPage;
+export default OnboardingGoalsPage;

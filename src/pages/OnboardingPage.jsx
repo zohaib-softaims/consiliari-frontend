@@ -2,7 +2,7 @@ import OnboardingCvUploadPage from "./OnboardingCvUploadPage";
 import OnboardingJobInformationPage from "./OnboardingJobInformationPage";
 import OnboardingStudyInformationPage from "./OnboardingStudyInformationPage";
 import OnboardingSkillProfilePage from "./OnboardingSkillProfilePage";
-import OnboardingCareerBlueprintPage from "./OnboardingCareerBlueprintPage";
+import OnboardingGoalsPage from "./OnboardingGoalsPage";
 import useOnboardingStore from "../store/onboardingStore";
 
 const OnboardingPage = () => {
@@ -13,7 +13,7 @@ const OnboardingPage = () => {
   if (step === 2) return <OnboardingJobInformationPage />;
   if (step === 3) return <OnboardingStudyInformationPage />;
   if (step === 4) return <OnboardingSkillProfilePage />;
-  if (step === 5) return <OnboardingCareerBlueprintPage />;
+  if (step === 5) return <OnboardingGoalsPage />;
   return <OnboardingCvUploadPage />;
 };
 
