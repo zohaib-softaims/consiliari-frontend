@@ -39,11 +39,11 @@ const useOnboardingStore = create(
           goals: {
             short_term_goal: "",
             long_term_goal: "",
-            no_goals: "",
+            no_goals: false,
             readiness_for_next_goal: "",
             development_for_next_role: "",
             challenges_for_goals: "",
-            clarity_on_overcoming_obstacle: "",
+            clarity_on_overcoming_obstacle: "1",
           },
           momentum: {
             growth_in_responsibility: "",

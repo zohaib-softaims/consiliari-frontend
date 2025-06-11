@@ -231,18 +231,101 @@ export const workStyleSchema = z.object({
 });
 
 const selfLeadershipAssessmentSchema = z.object({
-  self_awareness: z.number().min(0).max(100),
-  effective_communication: z.number().min(0).max(100),
-  interpersonal_relations: z.number().min(0).max(100),
-  vision: z.number().min(0).max(100),
-  time_management: z.number().min(0).max(100),
-  decision_making: z.number().min(0).max(100),
-  developing_team_members: z.number().min(0).max(100),
-  team_performance_leadership: z.number().min(0).max(100),
-  conflict_resolution: z.number().min(0).max(100),
-  strategic_thinking: z.number().min(0).max(100),
-  organizational_collaboration: z.number().min(0).max(100),
-  executive_presence: z.number().min(0).max(100),
+  self_awareness: z.coerce
+    .number({
+      required_error: "Self-awareness is required",
+      invalid_type_error: "Self-awareness must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  effective_communication: z.coerce
+    .number({
+      required_error: "Effective communication is required",
+      invalid_type_error: "Effective communication must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  interpersonal_relations: z.coerce
+    .number({
+      required_error: "Interpersonal relations is required",
+      invalid_type_error: "Interpersonal relations must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  vision: z.coerce
+    .number({
+      required_error: "Vision is required",
+      invalid_type_error: "Vision must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  time_management: z.coerce
+    .number({
+      required_error: "Time management is required",
+      invalid_type_error: "Time management must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  decision_making: z.coerce
+    .number({
+      required_error: "Decision making is required",
+      invalid_type_error: "Decision making must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  developing_team_members: z.coerce
+    .number({
+      required_error: "Developing team members is required",
+      invalid_type_error: "Developing team members must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  team_performance_leadership: z.coerce
+    .number({
+      required_error: "Team performance leadership is required",
+      invalid_type_error: "Team performance leadership must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  conflict_resolution: z.coerce
+    .number({
+      required_error: "Conflict resolution is required",
+      invalid_type_error: "Conflict resolution must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  strategic_thinking: z.coerce
+    .number({
+      required_error: "Strategic thinking is required",
+      invalid_type_error: "Strategic thinking must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  organizational_collaboration: z.coerce
+    .number({
+      required_error: "Organizational collaboration is required",
+      invalid_type_error: "Organizational collaboration must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
+
+  executive_presence: z.coerce
+    .number({
+      required_error: "Executive presence is required",
+      invalid_type_error: "Executive presence must be a number between 0 and 100",
+    })
+    .min(0, "Minimum is 0")
+    .max(100, "Maximum is 100"),
 });
 
 export const leadershipCapabilitiesSchema = z.object({

@@ -6,9 +6,9 @@ export const onboardingStep1 = [
 ];
 
 export const onboardingStep2 = [
-  { id: "upload-resume", name: "Aspiration & Goals" },
-  { id: "job-information", name: "Leadership Capabilities" },
-  { id: "study-experience", name: "Momentum & Engagement" },
-  { id: "your-skill-profile", name: "Alignment & Market View" },
-  { id: "your-skill-profile", name: "Work Style & preferences" },
+  { id: "goals", name: "Aspiration & Goals" },
+  { id: "leadership-capabilities", name: "Leadership Capabilities" },
+  { id: "momentum-engagement", name: "Momentum & Engagement" },
+  { id: "alignment-market-view", name: "Alignment & Market View" },
+  { id: "work-style-preferences", name: "Work Style & preferences" },
 ];
