@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import ProgressBar from "../components/onboarding-components/ProgressBar";
 import AuthHeader from "../components/shared/AuthHeader";
 import AuthInputField from "../components/shared/AuthInputField";
@@ -8,17 +8,21 @@ import AuthTextAreaField from "../components/shared/AuthTextAreaField";
 import useOnboardingStore from "../store/onboardingStore";
 import { proficiencyLevelOptions, currentRoleExperienceOptions } from "../constants/onboardingData";
 import { onboardingStep1 } from "../constants/onboardingProgressBarSteps";
+import { skillsInformationSchema } from "../validations/resumeFormsValidations";
+import { validateForm } from "../utils/validateForm";
 
 const OnboardingSkillProfilePage = () => {
   const skillsState = useOnboardingStore((state) => state.onboardingState.resume.skills_information);
   const updateSection = useOnboardingStore((state) => state.updateSection);
   const setStep = useOnboardingStore((state) => state.setStep);
   const step = useOnboardingStore((state) => state.step);
+  const [errors, setErrors] = useState({});
 
   // Helper to update a single field in skills_information
   const handleFieldChange = useCallback(
     (field, value) => {
       updateSection(`resume.skills_information.${field}`, () => value);
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     },
     [updateSection]
   );
@@ -31,6 +35,13 @@ const OnboardingSkillProfilePage = () => {
       [field]: value,
     };
     handleFieldChange("top_skills", newSkills);
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (newErrors.top_skills && newErrors.top_skills[idx]) {
+        newErrors.top_skills[idx][field] = undefined;
+      }
+      return newErrors;
+    });
   };
 
   const handleAddSkill = () => {
@@ -41,6 +52,27 @@ const OnboardingSkillProfilePage = () => {
     const newSkills = [...(skillsState.top_skills || [])];
     newSkills.splice(idx, 1);
     handleFieldChange("top_skills", newSkills);
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (newErrors.top_skills) {
+        newErrors.top_skills.splice(idx, 1);
+      }
+      return newErrors;
+    });
+  };
+
+  const handleNext = () => {
+    const fieldErrors = validateForm(skillsInformationSchema, skillsState);
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
+      return;
+    }
+    setErrors({}); // Clear any previous errors on successful validation
+    setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
   };
 
   return (
@@ -81,6 +113,9 @@ const OnboardingSkillProfilePage = () => {
                         value={skill.name}
                         onChange={(e) => handleSkillChange(idx, "name", e.target.value)}
                       />
+                      {errors.top_skills && errors.top_skills[idx] && errors.top_skills[idx].name && (
+                        <p className="text-red-500 text-xs mt-1">{errors.top_skills[idx].name}</p>
+                      )}
                     </div>
                     <div className="w-1/3">
                       <SelectInputField
@@ -91,6 +126,9 @@ const OnboardingSkillProfilePage = () => {
                         options={proficiencyLevelOptions}
                         onChange={(value) => handleSkillChange(idx, "proficiency", value)}
                       />
+                      {errors.top_skills && errors.top_skills[idx] && errors.top_skills[idx].proficiency && (
+                        <p className="text-red-500 text-xs mt-1">{errors.top_skills[idx].proficiency}</p>
+                      )}
                     </div>
                     <button
                       type="button"
@@ -101,6 +139,9 @@ const OnboardingSkillProfilePage = () => {
                     </button>
                   </div>
                 ))}
+                {errors.top_skills && !Array.isArray(errors.top_skills) && (
+                  <p className="text-red-500 text-xs mt-1">{errors.top_skills}</p>
+                )}
                 <button type="button" className="mt-2 px-4 py-2 rounded bg-[#766ee4] text-white text-sm" onClick={handleAddSkill}>
                   + Add Skill
                 </button>
@@ -115,6 +156,7 @@ const OnboardingSkillProfilePage = () => {
               name="achievements"
               value={skillsState.achievements}
               onChange={(e) => handleFieldChange("achievements", e.target.value)}
+              error={errors.achievements}
             />
 
             {/* Performance Recognition */}
@@ -125,6 +167,7 @@ const OnboardingSkillProfilePage = () => {
               name="performance_recognition"
               value={skillsState.performance_recognition}
               onChange={(e) => handleFieldChange("performance_recognition", e.target.value)}
+              error={errors.performance_recognition}
             />
 
             {/* Current Role Experience */}
@@ -134,17 +177,14 @@ const OnboardingSkillProfilePage = () => {
               value={skillsState.current_role_experience}
               options={currentRoleExperienceOptions}
               onChange={(value) => handleFieldChange("current_role_experience", value)}
+              error={errors.current_role_experience}
               required
             />
           </div>
         </div>
         <div className="flex justify-between mb-8">
-          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={() => setStep(step - 1)}>
-            Back
-          </button>
-          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={() => setStep(step + 1)}>
-            Next
-          </button>
+          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack}>Back</button>
+          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>Next</button>
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
-import { useCallback } from "react";
-import { ChevronDown } from "lucide-react";
+import { useCallback, useState } from "react";
 import ProgressBar from "../components/onboarding-components/ProgressBar";
 import AuthHeader from "../components/shared/AuthHeader";
 import AuthInputField from "../components/shared/AuthInputField";
@@ -8,21 +7,42 @@ import ButtonGroupField from "../components/shared/ButtonGroupField";
 import useOnboardingStore from "../store/onboardingStore";
 import { industryOptions, time_in_years, employmentType, promotionBeforeThatOptions } from "../constants/onboardingData";
 import { onboardingStep1 } from "../constants/onboardingProgressBarSteps";
+import { jobInformationSchema } from "../validations/resumeFormsValidations";
+import { validateForm } from "../utils/validateForm";
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import enUS from "date-fns/locale/en-US";
+registerLocale("en-US", enUS);
 
 const OnboardingJobInformationPage = () => {
   const onboardingState = useOnboardingStore((state) => state.onboardingState.resume.job_information);
   const updateSection = useOnboardingStore((state) => state.updateSection);
   const setStep = useOnboardingStore((state) => state.setStep);
   const step = useOnboardingStore((state) => state.step);
+  const [errors, setErrors] = useState({});
 
+  // Helper to update a single field in job_information
   const handleFieldChange = useCallback(
     (field, value) => {
-      console.log("field is", field);
-      console.log("value is", value);
       updateSection(`resume.job_information.${field}`, () => value);
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     },
     [updateSection]
   );
+
+  const handleNext = () => {
+    const fieldErrors = validateForm(jobInformationSchema, onboardingState);
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
+      return;
+    }
+    setErrors({});
+    setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -51,6 +71,7 @@ const OnboardingJobInformationPage = () => {
               name="current_job_title"
               value={onboardingState.current_job_title}
               onChange={(e) => handleFieldChange("current_job_title", e.target.value)}
+              error={errors.current_job_title}
               required
             />
             {/* Current or Most Recent Company */}
@@ -61,6 +82,7 @@ const OnboardingJobInformationPage = () => {
               name="current_company"
               value={onboardingState.current_company}
               onChange={(e) => handleFieldChange("current_company", e.target.value)}
+              error={errors.current_company}
               required
             />
             {/* Industry */}
@@ -71,6 +93,7 @@ const OnboardingJobInformationPage = () => {
               value={onboardingState.industry}
               options={industryOptions}
               onChange={(value) => handleFieldChange("industry", value)}
+              error={errors.industry}
             />
             {/* Time in Current/Most Recent Role */}
             <SelectInputField
@@ -80,6 +103,7 @@ const OnboardingJobInformationPage = () => {
               value={onboardingState.time_in_current_role}
               options={time_in_years}
               onChange={(value) => handleFieldChange("time_in_current_role", value)}
+              error={errors.time_in_current_role}
             />
             {/* Employment Type */}
             <SelectInputField
@@ -89,6 +113,7 @@ const OnboardingJobInformationPage = () => {
               value={onboardingState.employment_type}
               options={employmentType}
               onChange={(value) => handleFieldChange("employment_type", value)}
+              error={errors.employment_type}
             />
             {/* Location */}
             <AuthInputField
@@ -98,6 +123,7 @@ const OnboardingJobInformationPage = () => {
               name="location"
               value={onboardingState.location}
               onChange={(e) => handleFieldChange("location", e.target.value)}
+              error={errors.location}
               required
             />
             {/* Total Years of Professional Experience */}
@@ -107,7 +133,8 @@ const OnboardingJobInformationPage = () => {
               type="number"
               name="total_years_of_experience"
               value={onboardingState.total_years_of_experience}
-              onChange={(e) => handleFieldChange("total_years_of_experience", e.target.value)}
+              onChange={(e) => handleFieldChange("total_years_of_experience", parseFloat(e.target.value) || 0)}
+              error={errors.total_years_of_experience}
               required
             />
             {/* When was the promotion before that */}
@@ -117,24 +144,36 @@ const OnboardingJobInformationPage = () => {
               value={onboardingState.promotion_before_that}
               options={promotionBeforeThatOptions}
               onChange={(value) => handleFieldChange("promotion_before_that", value)}
+              error={errors.promotion_before_that}
             />
             {/* Last Promotion/Significant Role Change */}
-            <AuthInputField
-              label="Last Promotion/Significant Role Change"
-              placeholder="When was your last promotion or significant role change that involved increased responsibility? (approximate date)"
-              type="text"
-              name="last_promotion_time"
-              value={onboardingState.last_promotion_time}
-              onChange={(e) => handleFieldChange("last_promotion_time", e.target.value)}
-              required
-            />
+            <div className="w-full flex flex-col">
+              <label htmlFor="last_promotion_time" className="block text-sm font-bold text-[#020817] mb-1">
+                Last Promotion/Significant Role Change
+              </label>
+              <p className="text-sm text-[#5b5757] mt-2">
+                When was your last promotion or significant role change that involved increased responsibility?
+              </p>
+              <p className="text-sm text-[#5b5757] mb-2">(Approximate Date)</p>
+              <DatePicker
+                selected={onboardingState.last_promotion_time ? new Date(onboardingState.last_promotion_time) : null}
+                onChange={(date) => handleFieldChange("last_promotion_time", date ? date.toISOString().split("T")[0] : "")}
+                dateFormat="yyyy-MM-dd"
+                placeholderText=""
+                className={`w-full bg-[#f8fafc] px-3 py-2 border ${
+                  errors.last_promotion_time ? "border-red-500" : "border-[#e2e8f0]"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
+                locale="en-US"
+              />
+              {errors.last_promotion_time && <p className="text-red-500 text-xs mt-1">{errors.last_promotion_time}</p>}
+            </div>
           </div>
         </div>
         <div className="flex justify-between mb-8">
-          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={() => setStep(step - 1)}>
+          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack}>
             Back
           </button>
-          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={() => setStep(step + 1)}>
+          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>
             Next
           </button>
         </div>

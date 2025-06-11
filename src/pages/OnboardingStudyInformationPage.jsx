@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import ProgressBar from "../components/onboarding-components/ProgressBar";
 import AuthHeader from "../components/shared/AuthHeader";
 import AuthInputField from "../components/shared/AuthInputField";
@@ -7,17 +7,21 @@ import ButtonGroupField from "../components/shared/ButtonGroupField";
 import useOnboardingStore from "../store/onboardingStore";
 import { educationLevelOptions, relevanceOfEducationOptions } from "../constants/onboardingData";
 import { onboardingStep1 } from "../constants/onboardingProgressBarSteps";
+import { studyInformationSchema } from "../validations/resumeFormsValidations";
+import { validateForm } from "../utils/validateForm";
 
 const OnboardingStudyInformationPage = () => {
   const studyState = useOnboardingStore((state) => state.onboardingState.resume.study_information);
   const updateSection = useOnboardingStore((state) => state.updateSection);
   const setStep = useOnboardingStore((state) => state.setStep);
   const step = useOnboardingStore((state) => state.step);
+  const [errors, setErrors] = useState({});
 
   // Helper to update a single field in study_information
   const handleFieldChange = useCallback(
     (field, value) => {
       updateSection(`resume.study_information.${field}`, () => value);
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     },
     [updateSection]
   );
@@ -27,6 +31,13 @@ const OnboardingStudyInformationPage = () => {
     const newList = [...(studyState.certificates_list || [])];
     newList[idx] = value;
     handleFieldChange("certificates_list", newList);
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (newErrors.certificates_list && newErrors.certificates_list[idx]) {
+        newErrors.certificates_list[idx] = undefined;
+      }
+      return newErrors;
+    });
   };
   const handleAddCertificate = () => {
     handleFieldChange("certificates_list", [...(studyState.certificates_list || []), ""]);
@@ -35,6 +46,27 @@ const OnboardingStudyInformationPage = () => {
     const newList = [...(studyState.certificates_list || [])];
     newList.splice(idx, 1);
     handleFieldChange("certificates_list", newList);
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (newErrors.certificates_list) {
+        newErrors.certificates_list.splice(idx, 1);
+      }
+      return newErrors;
+    });
+  };
+
+  const handleNext = () => {
+    const fieldErrors = validateForm(studyInformationSchema, studyState);
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
+      return;
+    }
+    setErrors({}); // Clear any previous errors on successful validation
+    setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
   };
 
   return (
@@ -64,6 +96,7 @@ const OnboardingStudyInformationPage = () => {
               value={studyState.highest_level_of_education}
               options={educationLevelOptions}
               onChange={(value) => handleFieldChange("highest_level_of_education", value)}
+              error={errors.highest_level_of_education}
               required
             />
             {/* Field of Study */}
@@ -74,6 +107,7 @@ const OnboardingStudyInformationPage = () => {
               name="field_of_study"
               value={studyState.field_of_study}
               onChange={(e) => handleFieldChange("field_of_study", e.target.value)}
+              error={errors.field_of_study}
               required
             />
             {/* Institution Name */}
@@ -84,6 +118,7 @@ const OnboardingStudyInformationPage = () => {
               name="institute_name"
               value={studyState.institute_name}
               onChange={(e) => handleFieldChange("institute_name", e.target.value)}
+              error={errors.institute_name}
               required
             />
             {/* Relevance of Education */}
@@ -93,6 +128,7 @@ const OnboardingStudyInformationPage = () => {
               value={studyState.relevance_of_education}
               options={relevanceOfEducationOptions}
               onChange={(value) => handleFieldChange("relevance_of_education", value)}
+              error={errors.relevance_of_education}
               required
             />
             {/* List of Certificates */}
@@ -109,6 +145,9 @@ const OnboardingStudyInformationPage = () => {
                       value={cert}
                       onChange={(e) => handleCertificateChange(idx, e.target.value)}
                     />
+                    {errors.certificates_list && errors.certificates_list[idx] && (
+                      <p className="text-red-500 text-xs mt-1">{errors.certificates_list[idx].name}</p>
+                    )}
                     <button
                       type="button"
                       className="text-red-500 text-xs px-2 py-1 border border-red-200 rounded hover:bg-red-50"
@@ -118,6 +157,9 @@ const OnboardingStudyInformationPage = () => {
                     </button>
                   </div>
                 ))}
+                {errors.certificates_list && !Array.isArray(errors.certificates_list) && (
+                  <p className="text-red-500 text-xs mt-1">{errors.certificates_list}</p>
+                )}
                 <button
                   type="button"
                   className="mt-2 px-4 py-2 rounded bg-[#766ee4] text-white text-sm"
@@ -130,8 +172,8 @@ const OnboardingStudyInformationPage = () => {
           </div>
         </div>
         <div className="flex justify-between mb-8">
-          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={() => setStep(step - 1)}>Back</button>
-          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={() => setStep(step + 1)}>Next</button>
+          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack}>Back</button>
+          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>Next</button>
         </div>
       </div>
     </div>
