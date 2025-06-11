@@ -133,7 +133,7 @@ const OnboardingJobInformationPage = () => {
               type="number"
               name="total_years_of_experience"
               value={onboardingState.total_years_of_experience}
-              onChange={(e) => handleFieldChange("total_years_of_experience", parseFloat(e.target.value) || 0)}
+              onChange={(e) => handleFieldChange("total_years_of_experience", e.target.value === '' ? '' : parseFloat(e.target.value))}
               error={errors.total_years_of_experience}
               required
             />

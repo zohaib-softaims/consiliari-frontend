@@ -1,6 +1,6 @@
 import React from "react";
 
-function ButtonGroupField({ label, value, onChange, error, options = [], required = false }) {
+function ButtonGroupField({ label, value, onChange, error, options = [] }) {
   return (
     <div>
       <label className="block text-sm font-bold text-[#020817] mb-1">{label}</label>
@@ -23,7 +23,6 @@ function ButtonGroupField({ label, value, onChange, error, options = [], require
         ))}
       </div>
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-      {required && !value && <p className="text-red-500 text-xs mt-1">This field is required</p>}
     </div>
   );
 }

@@ -55,7 +55,7 @@ export const jobInformationSchema = z.object({
       required_error: "Total years of experience is required",
       invalid_type_error: "Total years of experience must be a number",
     })
-    .min(0, { message: "Experience must be a non-negative number" }),
+    .min(0.1, { message: "Experience must be atleast one month" }),
 
   promotion_before_that: z.enum(promotionBeforeThatOptions, {
     required_error: "promotion_before_that is required",

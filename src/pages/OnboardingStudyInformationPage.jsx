@@ -27,20 +27,23 @@ const OnboardingStudyInformationPage = () => {
   );
 
   // Certificates list handlers
-  const handleCertificateChange = (idx, value) => {
+  const handleCertificateChange = (idx, field, value) => {
     const newList = [...(studyState.certificates_list || [])];
-    newList[idx] = value;
+    newList[idx] = {
+      ...(newList[idx] || { name: "", isActive: false }),
+      [field]: value,
+    };
     handleFieldChange("certificates_list", newList);
     setErrors((prev) => {
       const newErrors = { ...prev };
       if (newErrors.certificates_list && newErrors.certificates_list[idx]) {
-        newErrors.certificates_list[idx] = undefined;
+        newErrors.certificates_list[idx][field] = undefined;
       }
       return newErrors;
     });
   };
   const handleAddCertificate = () => {
-    handleFieldChange("certificates_list", [...(studyState.certificates_list || []), ""]);
+    handleFieldChange("certificates_list", [...(studyState.certificates_list || []), { name: "", isActive: false }]);
   };
   const handleRemoveCertificate = (idx) => {
     const newList = [...(studyState.certificates_list || [])];
@@ -129,42 +132,67 @@ const OnboardingStudyInformationPage = () => {
               options={relevanceOfEducationOptions}
               onChange={(value) => handleFieldChange("relevance_of_education", value)}
               error={errors.relevance_of_education}
-              required
             />
             {/* List of Certificates */}
             <div>
               <label className="block text-sm font-bold text-[#020817] mb-1">List of certificates</label>
-              <p className="text-xs text-[#737373] mb-2">Please list any professional certifications you hold that are relevant to your current role or career path. For each, indicate its name and if it is currently active.</p>
+              <p className="text-xs text-[#737373] mb-2">
+                Please list any professional certifications you hold that are relevant to your current role or career path. For each,
+                indicate its name and if it is currently active.
+              </p>
               <div className="space-y-2">
                 {(studyState.certificates_list || []).map((cert, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      className="w-full bg-[#f8fafc] px-3 py-2 border border-[#e2e8f0] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder="e.g. Lynda Certificate of Google"
-                      value={cert}
-                      onChange={(e) => handleCertificateChange(idx, e.target.value)}
-                    />
-                    {errors.certificates_list && errors.certificates_list[idx] && (
-                      <p className="text-red-500 text-xs mt-1">{errors.certificates_list[idx].name}</p>
-                    )}
-                    <button
-                      type="button"
-                      className="text-red-500 text-xs px-2 py-1 border border-red-200 rounded hover:bg-red-50"
-                      onClick={() => handleRemoveCertificate(idx)}
-                    >
-                      Remove
-                    </button>
+                  <div key={idx} className="border p-3 rounded-md border-[#e2e8f0]">
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        className="text-red-500 text-xs px-2 py-1 border border-red-200 rounded hover:bg-red-50"
+                        onClick={() => handleRemoveCertificate(idx)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor={`certificate-name-${idx}`} className="block text-sm text-[#020817] mb-1">
+                        Certificate Name
+                      </label>
+                      <input
+                        type="text"
+                        id={`certificate-name-${idx}`}
+                        className={`w-full bg-[#f8fafc] px-3 py-2 border ${
+                          errors.certificates_list && errors.certificates_list[idx] && errors.certificates_list[idx].name
+                            ? "border-red-500"
+                            : "border-[#e2e8f0]"
+                        } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
+                        placeholder="Enter certificate name here"
+                        value={cert.name}
+                        onChange={(e) => handleCertificateChange(idx, "name", e.target.value)}
+                      />
+                      {errors.certificates_list && errors.certificates_list[idx] && errors.certificates_list[idx].name && (
+                        <p className="text-red-500 text-xs mt-1">{errors.certificates_list[idx].name}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={`certificate-active-${idx}`}
+                        checked={cert.isActive}
+                        onChange={(e) => handleCertificateChange(idx, "isActive", e.target.checked)}
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor={`certificate-active-${idx}`} className="ml-2 block text-sm text-gray-900">
+                        Currently Active
+                      </label>
+                      {errors.certificates_list && errors.certificates_list[idx] && errors.certificates_list[idx].isActive && (
+                        <p className="text-red-500 text-xs mt-1 ml-2">{errors.certificates_list[idx].isActive}</p>
+                      )}
+                    </div>
                   </div>
                 ))}
                 {errors.certificates_list && !Array.isArray(errors.certificates_list) && (
                   <p className="text-red-500 text-xs mt-1">{errors.certificates_list}</p>
                 )}
-                <button
-                  type="button"
-                  className="mt-2 px-4 py-2 rounded bg-[#766ee4] text-white text-sm"
-                  onClick={handleAddCertificate}
-                >
+                <button type="button" className="mt-2 px-4 py-2 rounded bg-[#766ee4] text-white text-sm" onClick={handleAddCertificate}>
                   + Add another certificate
                 </button>
               </div>
@@ -172,12 +200,16 @@ const OnboardingStudyInformationPage = () => {
           </div>
         </div>
         <div className="flex justify-between mb-8">
-          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack}>Back</button>
-          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>Next</button>
+          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack}>
+            Back
+          </button>
+          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>
+            Next
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default OnboardingStudyInformationPage; 
+export default OnboardingStudyInformationPage;
