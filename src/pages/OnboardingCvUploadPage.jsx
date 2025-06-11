@@ -4,10 +4,12 @@ import AuthHeader from "../components/shared/AuthHeader";
 import { onboardingStep1 } from "../constants/onboardingProgressBarSteps";
 import apiClient from "../utils/apiClient";
 import LoaderIcon from "../../public/icons/LoaderIcon";
+import useOnboardingStore from "../store/onboardingStore";
 
 const OnboardingCvUploadPage = () => {
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const setStep = useOnboardingStore((state) => state.setStep);
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -45,7 +47,7 @@ const OnboardingCvUploadPage = () => {
       const response = await apiClient.post("/onboarding/parse-cv", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("cv response", response);
+      setStep(2);
     } catch (error) {
       console.log("cv error", error);
     } finally {

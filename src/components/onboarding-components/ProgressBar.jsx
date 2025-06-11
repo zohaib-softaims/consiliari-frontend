@@ -1,9 +1,9 @@
-import { useLocation } from "react-router-dom";
+import useOnboardingStore from "../../store/onboardingStore";
 
 export default function ProgressBar({ steps }) {
-  const location = useLocation();
-  const currentPath = location.pathname.split("/").filter(Boolean).pop();
-  const currentIndex = steps.findIndex((step) => step.id === currentPath);
+  const step = useOnboardingStore((state) => state.step);
+  console.log("step is", step);
+  const currentIndex = step - 1;
 
   return (
     <div className="flex max-w-2xl mx-auto my-4 bg-[#f5f5f5] rounded-md">

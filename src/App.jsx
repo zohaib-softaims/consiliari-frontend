@@ -8,6 +8,7 @@ import UpdatePasswordPage from "./pages/UpdatePasswordPage";
 import ConfirmEmailPage from "./pages/ConfirmEmailPage";
 import OnboardingJobInformationPage from "./pages/OnboardingJobInformationPage";
 import OnboardingCvUploadPage from "./pages/OnboardingCvUploadPage";
+import OnboardingPage from "./pages/OnboardingPage";
 
 function App() {
   return (
@@ -21,8 +22,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/auth/reset-password" element={<UpdatePasswordPage />} />
           <Route path="/auth/confirm-email" element={<ConfirmEmailPage />} />
-          <Route path="/onboarding/job-information" element={<OnboardingJobInformationPage />} />
-          <Route path="/onboarding/upload-resume" element={<OnboardingCvUploadPage />} />
+          <Route path="/onboarding" element={<OnboardingPage />} />
         </Routes>
       </Router>
 
