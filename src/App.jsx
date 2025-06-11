@@ -6,8 +6,6 @@ import AuthCallback from "./pages/AuthCallback";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import UpdatePasswordPage from "./pages/UpdatePasswordPage";
 import ConfirmEmailPage from "./pages/ConfirmEmailPage";
-import OnboardingJobInformationPage from "./pages/OnboardingJobInformationPage";
-import OnboardingCvUploadPage from "./pages/OnboardingCvUploadPage";
 import OnboardingPage from "./pages/OnboardingPage";
 
 function App() {
