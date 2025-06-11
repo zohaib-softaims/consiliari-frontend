@@ -5,6 +5,7 @@ import AuthHeader from "../components/shared/AuthHeader";
 import AuthInputField from "../components/shared/AuthInputField";
 import SelectInputField from "../components/shared/SelectInputField";
 import { industries, time_in_years } from "../constants/onboardingData";
+import ButtonGroupField from "../components/shared/ButtonGroupField";
 const OnboardingJobInformationPage = () => {
   const [formData, setFormData] = useState({
     jobTitle: "",
@@ -33,7 +34,7 @@ const OnboardingJobInformationPage = () => {
         <ProgressBar />
 
         {/* Form Content */}
-        <div className="space-y-6 mt-8">
+        <div className="space-y-6 mt-8 mb-8">
           <div>
             <h3 className="text-xl font-bold text-[#766ee4] mb-1">Job Information</h3>
             <p className="text-sm text-[#737373] mb-6">Fill job related information in the following fields.</p>
@@ -80,26 +81,13 @@ const OnboardingJobInformationPage = () => {
               options={time_in_years}
             />
 
-            {/* Employment Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Employment Type</label>
-              <div className="relative">
-                <select
-                  value={formData.employmentType}
-                  onChange={(e) => handleInputChange("employmentType", e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white text-gray-400"
-                >
-                  <option value="">What is your employment type?</option>
-                  <option value="full-time">Full-time</option>
-                  <option value="part-time">Part-time</option>
-                  <option value="contract">Contract</option>
-                  <option value="freelance">Freelance</option>
-                  <option value="internship">Internship</option>
-                  <option value="unemployed">Currently Unemployed</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
+            {/* When was the promotion before that */}
+            <ButtonGroupField
+              label={"When was the promotion before that"}
+              name={"promotion"}
+              value={"7-12 months"}
+              options={["1-6 months", "7-12 months", "1-2 years", "2+ years"]}
+            />
           </div>
         </div>
       </div>
