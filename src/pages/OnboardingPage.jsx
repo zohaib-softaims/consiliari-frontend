@@ -1,6 +1,7 @@
 import OnboardingCvUploadPage from "./OnboardingCvUploadPage";
 import OnboardingJobInformationPage from "./OnboardingJobInformationPage";
 import OnboardingStudyInformationPage from "./OnboardingStudyInformationPage";
+import OnboardingSkillProfilePage from "./OnboardingSkillProfilePage";
 import useOnboardingStore from "../store/onboardingStore";
 
 const OnboardingPage = () => {
@@ -10,6 +11,7 @@ const OnboardingPage = () => {
   if (step === 1) return <OnboardingCvUploadPage />;
   if (step === 2) return <OnboardingJobInformationPage />;
   if (step === 3) return <OnboardingStudyInformationPage />;
+  if (step === 4) return <OnboardingSkillProfilePage />;
   return <OnboardingCvUploadPage />;
 };
 
