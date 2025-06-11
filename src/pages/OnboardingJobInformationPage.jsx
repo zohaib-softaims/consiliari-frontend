@@ -12,10 +12,13 @@ import { onboardingStep1 } from "../constants/onboardingProgressBarSteps";
 const OnboardingJobInformationPage = () => {
   const onboardingState = useOnboardingStore((state) => state.onboardingState.resume.job_information);
   const updateSection = useOnboardingStore((state) => state.updateSection);
+  const setStep = useOnboardingStore((state) => state.setStep);
+  const step = useOnboardingStore((state) => state.step);
 
-  // Helper to update a single field in job_information
   const handleFieldChange = useCallback(
     (field, value) => {
+      console.log("field is", field);
+      console.log("value is", value);
       updateSection(`resume.job_information.${field}`, () => value);
     },
     [updateSection]
@@ -128,8 +131,12 @@ const OnboardingJobInformationPage = () => {
           </div>
         </div>
         <div className="flex justify-between mb-8">
-          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700">Back</button>
-          <button className="px-6 py-2 rounded bg-[#2f279c] text-white">Next</button>
+          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={() => setStep(step - 1)}>
+            Back
+          </button>
+          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={() => setStep(step + 1)}>
+            Next
+          </button>
         </div>
       </div>
     </div>

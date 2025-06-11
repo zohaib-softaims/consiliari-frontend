@@ -1,6 +1,6 @@
 import React from "react";
 
-function ButtonGroupField({ label, name, value, onChange, error, options = [], required = false }) {
+function ButtonGroupField({ label, value, onChange, error, options = [], required = false }) {
   return (
     <div>
       <label className="block text-sm font-bold text-[#020817] mb-1">{label}</label>
@@ -9,7 +9,7 @@ function ButtonGroupField({ label, name, value, onChange, error, options = [], r
           <button
             key={option}
             type="button"
-            onClick={() => onChange({ target: { name, value: option } })}
+            onClick={() => onChange(option)}
             className={`w-full px-6 py-3 rounded-md text-sm font-medium transition-colors duration-200
               ${
                 value === option

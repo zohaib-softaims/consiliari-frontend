@@ -10,7 +10,7 @@ function SelectInputField({ label, name, value, onChange, error, options = [], p
         id={name}
         name={name}
         value={value}
-        onChange={onChange}
+        onChange={(e) => onChange(e.target.value)}
         required={required}
         className={`w-full bg-[#f8fafc] px-3 py-2 border ${
           error ? "border-red-500" : "border-[#e2e8f0]"
