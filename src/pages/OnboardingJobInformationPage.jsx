@@ -6,6 +6,7 @@ import AuthInputField from "../components/shared/AuthInputField";
 import SelectInputField from "../components/shared/SelectInputField";
 import { industries, time_in_years } from "../constants/onboardingData";
 import ButtonGroupField from "../components/shared/ButtonGroupField";
+import { onboardingStep1 } from "../constants/onboardingProgressBarSteps";
 const OnboardingJobInformationPage = () => {
   const [formData, setFormData] = useState({
     jobTitle: "",
@@ -31,7 +32,7 @@ const OnboardingJobInformationPage = () => {
           <h2 className="text-2xl font-semibold text-gray-900 mb-8">Your Career Foundation</h2>
         </div>
 
-        <ProgressBar />
+        <ProgressBar steps={onboardingStep1} />
 
         {/* Form Content */}
         <div className="space-y-6 mt-8 mb-8">
