@@ -1,9 +1,10 @@
 import React from "react";
 
-function ButtonGroupField({ label, value, onChange, error, options = [] }) {
+function ButtonGroupField({ label, value, onChange, error, options = [], description = "" }) {
   return (
     <div>
-      <label className="block text-sm font-bold text-[#020817] mb-1">{label}</label>
+      <label className={`block text-sm font-bold text-[#020817] ${description ? "mb-1" : "mb-2"}`}>{label}</label>
+      {description && <p className="text-xs text-[#737373] mb-2">{description}</p>}
       <div className="grid grid-cols-3 gap-4">
         {options.map((option) => (
           <button

@@ -90,7 +90,7 @@ const OnboardingStudyInformationPage = () => {
             <p className="text-sm text-[#737373] mb-6">Fill study related information in the following fields.</p>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-7">
             {/* Highest Level of Education Completed */}
             <SelectInputField
               label="Highest Level of Education Completed"
@@ -132,6 +132,7 @@ const OnboardingStudyInformationPage = () => {
               options={relevanceOfEducationOptions}
               onChange={(value) => handleFieldChange("relevance_of_education", value)}
               error={errors.relevance_of_education}
+              description="How relevant is your highest level of education to your current career field?"
             />
             {/* List of Certificates */}
             <div>
@@ -192,7 +193,11 @@ const OnboardingStudyInformationPage = () => {
                 {errors.certificates_list && !Array.isArray(errors.certificates_list) && (
                   <p className="text-red-500 text-xs mt-1">{errors.certificates_list}</p>
                 )}
-                <button type="button" className="mt-2 px-4 py-2 rounded bg-[#766ee4] text-white text-sm" onClick={handleAddCertificate}>
+                <button
+                  type="button"
+                  className="mt-2 px-4 py-2 rounded bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white text-sm"
+                  onClick={handleAddCertificate}
+                >
                   + Add another certificate
                 </button>
               </div>

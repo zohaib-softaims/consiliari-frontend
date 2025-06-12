@@ -9,6 +9,7 @@ import { industryOptions, time_in_years, employmentType, promotionBeforeThatOpti
 import { onboardingStep1 } from "../constants/onboardingProgressBarSteps";
 import { jobInformationSchema } from "../validations/resumeFormsValidations";
 import { validateForm } from "../utils/validateForm";
+import { Calendar } from "lucide-react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import enUS from "date-fns/locale/en-US";
@@ -62,7 +63,7 @@ const OnboardingJobInformationPage = () => {
             <p className="text-sm text-[#737373] mb-6">Fill job related information in the following fields.</p>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-7">
             {/* Current or Most Recent Job Title */}
             <AuthInputField
               label="Current or Most Recent Job Title"
@@ -118,7 +119,7 @@ const OnboardingJobInformationPage = () => {
             {/* Location */}
             <AuthInputField
               label="Location"
-              placeholder="Where was this located? (e.g. London, UK)"
+              placeholder="Where is/was this role located? (e.g., London, UK)"
               type="text"
               name="location"
               value={onboardingState.location}
@@ -129,11 +130,11 @@ const OnboardingJobInformationPage = () => {
             {/* Total Years of Professional Experience */}
             <AuthInputField
               label="Total Years of Professional Experience"
-              placeholder="Approximately how many years of professional experience do you have?"
+              placeholder="Approximately how many total years of professional experience do you have?"
               type="number"
               name="total_years_of_experience"
               value={onboardingState.total_years_of_experience}
-              onChange={(e) => handleFieldChange("total_years_of_experience", e.target.value === '' ? '' : parseFloat(e.target.value))}
+              onChange={(e) => handleFieldChange("total_years_of_experience", e.target.value === "" ? "" : parseFloat(e.target.value))}
               error={errors.total_years_of_experience}
               required
             />
@@ -155,16 +156,21 @@ const OnboardingJobInformationPage = () => {
                 When was your last promotion or significant role change that involved increased responsibility?
               </p>
               <p className="text-sm text-[#5b5757] mb-2">(Approximate Date)</p>
-              <DatePicker
-                selected={onboardingState.last_promotion_time ? new Date(onboardingState.last_promotion_time) : null}
-                onChange={(date) => handleFieldChange("last_promotion_time", date ? date.toISOString().split("T")[0] : "")}
-                dateFormat="yyyy-MM-dd"
-                placeholderText=""
-                className={`w-full bg-[#f8fafc] px-3 py-2 border ${
-                  errors.last_promotion_time ? "border-red-500" : "border-[#e2e8f0]"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                locale="en-US"
-              />
+              <div className="flex flex-col relative w-full">
+                <div className="inset-0 absolute left-0 pl-3 z-100 flex items-center pointer-events-none">
+                  <Calendar className="text-[#2f279c] w-5 h-5" />
+                </div>
+                <DatePicker
+                  selected={onboardingState.last_promotion_time ? new Date(onboardingState.last_promotion_time) : null}
+                  onChange={(date) => handleFieldChange("last_promotion_time", date ? date.toISOString().split("T")[0] : "")}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText=""
+                  className={`w-full pl-10 bg-[#f8fafc] px-3 py-2 border ${
+                    errors.last_promotion_time ? "border-red-500" : "border-[#e2e8f0]"
+                  } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
+                  locale="en-US"
+                />
+              </div>
               {errors.last_promotion_time && <p className="text-red-500 text-xs mt-1">{errors.last_promotion_time}</p>}
             </div>
           </div>

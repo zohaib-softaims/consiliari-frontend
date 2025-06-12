@@ -3,7 +3,7 @@ import React from "react";
 function SelectInputField({ label, name, value, onChange, error, options = [], placeholder = "Select an option", required = false }) {
   return (
     <div className="relative">
-      <label htmlFor={name} className="block text-sm font-bold text-[#020817] mb-1">
+      <label htmlFor={name} className="block text-sm font-bold text-[#020817] mb-2">
         {label}
       </label>
       <select

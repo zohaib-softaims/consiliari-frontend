@@ -10,7 +10,11 @@ import { toast } from "react-toastify";
 const OnboardingCvUploadPage = () => {
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const cvUploaded = useOnboardingStore((state) => state.cvUploaded);
+  const cvName = useOnboardingStore((state) => state.cvName);
   const setStep = useOnboardingStore((state) => state.setStep);
+  const setCvUploaded = useOnboardingStore((state) => state.setCvUploaded);
+  const setCvName = useOnboardingStore((state) => state.setCvName);
   const updateResume = useOnboardingStore((state) => state.updateResume);
 
   const handleFileChange = async (e) => {
@@ -53,10 +57,12 @@ const OnboardingCvUploadPage = () => {
       const response = await apiClient.post("/onboarding/parse-cv", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      setCvUploaded(true);
+      setCvName(file.name);
       updateResume(response?.data?.resume);
       setStep(2);
     } catch (error) {
-      toast.error(error?.message || "Unbale to parse CV at the moment");
+      toast.error(error?.message || "Unable to parse CV at the moment");
     } finally {
       setUploading(false);
     }
@@ -96,6 +102,12 @@ const OnboardingCvUploadPage = () => {
               <div className="flex flex-col items-center justify-center">
                 <LoaderIcon />
                 <p className="text-xs text-[#737373] mt-2">Uploading your resume...</p>
+              </div>
+            ) : cvUploaded ? (
+              <div className="text-center">
+                <p className="text-lg font-bold text-[#2f279c]">Resume Uploaded</p>
+                <p className="text-sm text-[#737373] mt-2">{cvName}</p>
+                <p className="text-xs text-[#2f279c]/39 mt-2">Click or drag to upload a different resume</p>
               </div>
             ) : (
               <div className="text-center">

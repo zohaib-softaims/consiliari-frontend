@@ -3,7 +3,7 @@ import React from "react";
 function AuthInputField({ label, type, name, value, onChange, error, placeholder = "", required = false }) {
   return (
     <div>
-      <label htmlFor={name} className="block text-sm font-bold text-[#020817] mb-1">
+      <label htmlFor={name} className="block text-sm font-bold text-[#020817] mb-2">
         {label}
       </label>
       <input

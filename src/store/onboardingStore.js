@@ -6,7 +6,12 @@ const useOnboardingStore = create(
   persist(
     (set) => ({
       step: 1,
+      cvUploaded: false,
+      cvName: "",
+
       setStep: (step) => set({ step }),
+      setCvUploaded: (status) => set({ cvUploaded: status }),
+      setCvName: (name) => set({ cvName: name }),
 
       onboardingState: {
         resume: {
@@ -97,7 +102,6 @@ const useOnboardingStore = create(
         },
       },
 
-      // 🔄 Generic nested updater (works inside onboardingState)
       updateSection: (path, updater) =>
         set(
           produce((state) => {
@@ -118,6 +122,8 @@ const useOnboardingStore = create(
             };
           })
         ),
+
+      resetCvStates: () => set({ cvUploaded: false, cvName: "" }),
     }),
 
     {

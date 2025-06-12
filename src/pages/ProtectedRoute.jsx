@@ -46,7 +46,8 @@ const ProtectedRoute = ({ children }) => {
   }
   const onboardingCompleted = user?.is_onboarding_completed;
   const currentPath = location.pathname;
-  if ((onboardingCompleted && currentPath === "/onboarding") || (!onboardingCompleted && currentPath !== "/onboarding")) {
+  if ((onboardingCompleted && currentPath.startsWith("/onboarding")) || (!onboardingCompleted && !currentPath.startsWith("/onboarding"))) {
+    console.log("test");
     return <PageLoader />;
   }
 
