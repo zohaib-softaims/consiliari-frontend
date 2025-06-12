@@ -3,7 +3,15 @@ export const validateForm = (schema, formData) => {
   if (!result.success) {
     const fieldErrors = {};
     result.error.errors.forEach((err) => {
-      fieldErrors[err.path[0]] = err.message;
+      const path = err.path;
+      let current = fieldErrors;
+      for (let i = 0; i < path.length - 1; i++) {
+        if (!current[path[i]]) {
+          current[path[i]] = {};
+        }
+        current = current[path[i]];
+      }
+      current[path[path.length - 1]] = err.message;
     });
     return fieldErrors;
   }

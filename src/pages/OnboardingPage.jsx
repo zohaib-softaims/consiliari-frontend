@@ -4,6 +4,7 @@ import OnboardingStudyInformationPage from "./OnboardingStudyInformationPage";
 import OnboardingSkillProfilePage from "./OnboardingSkillProfilePage";
 import OnboardingGoalsPage from "./OnboardingGoalsPage";
 import OnboardingLeadershipPage from "./OnboardingLeadershipPage";
+import OnboardingMomentumPage from "./OnboardingMomentumPage";
 import useOnboardingStore from "../store/onboardingStore";
 
 const OnboardingPage = () => {
@@ -16,6 +17,7 @@ const OnboardingPage = () => {
   if (step === 4) return <OnboardingSkillProfilePage />;
   if (step === 5) return <OnboardingGoalsPage />;
   if (step === 6) return <OnboardingLeadershipPage />;
+  if (step === 7) return <OnboardingMomentumPage />;
   return <OnboardingCvUploadPage />;
 };
 

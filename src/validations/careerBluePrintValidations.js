@@ -82,10 +82,10 @@ export const goalsSchema = z
   });
 
 const personalAlignmentSchema = z.object({
-  rating: z
-    .string({
+  rating: z.coerce
+    .number({
       required_error: "Personal alignment rating is required",
-      invalid_type_error: "Personal alignment rating must be a string",
+      invalid_type_error: "Personal alignment rating must be a number",
     })
     .min(1, "Personal alignment rating cannot be empty")
     .max(5, "Personal alignment Rating must be between 1 and 5"),
