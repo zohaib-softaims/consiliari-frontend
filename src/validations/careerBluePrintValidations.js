@@ -224,11 +224,10 @@ export const workStyleSchema = z.object({
 
   excitement_about_consiliari: z
     .string({
-      required_error: "Excitement about Consiliari is required",
       invalid_type_error: "Excitement about Consiliari must be a string",
     })
-    .min(1, "Excitement about Consiliari cannot be empty")
-    .max(500, "Excitement about Consiliari is too long"),
+    .max(500, "Excitement about Consiliari is too long")
+    .optional(),
 });
 
 const selfLeadershipAssessmentSchema = z.object({

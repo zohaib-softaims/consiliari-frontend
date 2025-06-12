@@ -46,7 +46,7 @@ const OnboardingMarketViewPage = () => {
           <h2 className="text-2xl font-semibold text-gray-900 mb-8">Your Market View</h2>
         </div>
 
-        <ProgressBar steps={onboardingStep2} offset={3} />
+        <ProgressBar steps={onboardingStep2} offset={5} />
 
         <div className="space-y-6 mt-8 mb-8">
           <div>

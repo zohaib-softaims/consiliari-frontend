@@ -37,10 +37,14 @@ export const currentRoleExperienceOptions = [
 export const readinessForNextRoleOptions = ["Not Ready", "Partially Ready", "Mostly Ready", "Fully Ready"];
 export const industryGrowthTrajectoryPerceptionOptions = ["Declining", "Stable", "Moderate Growth", "High Growth"];
 export const preferredCoachingStyleOptions = [
-  " Direct & Action-Oriented",
-  " Supportive & Encouraging",
-  " Supportive & Encouraging",
-  " Direct & Action-Oriented",
+  {
+    main_heading: "Direct & Action-Oriented",
+    description: "I prefer clear, concise advice and a focus on immediate next steps.",
+  },
+  {
+    main_heading: "Supportive & Encouraging",
+    description: "I prefer clear, concise advice and a focus on immediate next steps.",
+  },
 ];
 
 export const accountabilityOptions = [
