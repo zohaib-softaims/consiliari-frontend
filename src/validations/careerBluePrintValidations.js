@@ -165,14 +165,15 @@ export const momentumSchema = z.object({
 });
 
 export const marketViewSchema = z.object({
-  annual_salary: z
+  annual_salary: z.coerce
     .number({
       required_error: "Annual salary is required",
       invalid_type_error: "Annual salary must be a number",
     })
+    .min(1, "Annual Salary is required")
     .nonnegative("Annual salary must be a non-negative number"),
 
-  annual_bonus: z
+  annual_bonus: z.coerce
     .number({
       invalid_type_error: "Annual bonus must be a number",
     })
@@ -180,7 +181,7 @@ export const marketViewSchema = z.object({
     .optional()
     .default(0),
 
-  equity: z
+  equity: z.coerce
     .number({
       invalid_type_error: "Equity must be a number",
     })
@@ -188,7 +189,7 @@ export const marketViewSchema = z.object({
     .optional()
     .default(0),
 
-  other_compensation: z
+  other_compensation: z.coerce
     .number({
       invalid_type_error: "Other compensation must be a number",
     })
