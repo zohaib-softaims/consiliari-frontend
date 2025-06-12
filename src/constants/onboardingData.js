@@ -47,6 +47,8 @@ export const preferredCoachingStyleOptions = [
   },
 ];
 
+export const preferredCoachingStyleOptionStrings = ["Direct & Action-Oriented", "Supportive & Encouraging"];
+
 export const accountabilityOptions = [
   "Regular check-ins and reminders",
   "Seeing clear progress and milestones",

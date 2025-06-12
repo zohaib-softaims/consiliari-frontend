@@ -9,13 +9,17 @@ import { workStyleSchema } from "../validations/careerBluePrintValidations";
 import { validateForm } from "../utils/validateForm";
 import { preferredCoachingStyleOptions, accountabilityOptions, reactionToSetbackOptions } from "../constants/onboardingData";
 import DetailedButtonGroupField from "../components/shared/DetailedButtonGroupField";
+import apiClient from "../utils/apiClient";
+import { useNavigate } from "react-router-dom";
 
 const OnboardingWorkStylePage = () => {
   const workStyleState = useOnboardingStore((state) => state.onboardingState.career_blueprint.work_style);
   const updateSection = useOnboardingStore((state) => state.updateSection);
   const setStep = useOnboardingStore((state) => state.setStep);
   const step = useOnboardingStore((state) => state.step);
+  const onboardingState = useOnboardingStore((state) => state.onboardingState);
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleFieldChange = useCallback(
     (field, value) => {
@@ -25,14 +29,23 @@ const OnboardingWorkStylePage = () => {
     [updateSection]
   );
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const fieldErrors = validateForm(workStyleSchema, workStyleState);
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       return;
     }
     setErrors({});
-    setStep(step + 1);
+    try {
+      const response = await apiClient.post("/onboarding/completed", onboardingState);
+      if (response.success) {
+        navigate("/");
+      } else {
+        console.error("API Error:", response.message);
+      }
+    } catch (error) {
+      console.error("Failed to submit onboarding data:", error);
+    }
   };
 
   const handleBack = () => {

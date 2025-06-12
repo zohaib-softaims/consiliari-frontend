@@ -3,7 +3,7 @@ import {
   accountabilityOptions,
   industryGrowthTrajectoryPerceptionOptions,
   perceiveAsALeaderOptions,
-  preferredCoachingStyleOptions,
+  preferredCoachingStyleOptionStrings,
   reactionToSetbackOptions,
   readinessForNextRoleOptions,
   relationWithManagerOptions,
@@ -207,7 +207,7 @@ export const marketViewSchema = z.object({
 });
 
 export const workStyleSchema = z.object({
-  preferred_coaching_style: z.enum(preferredCoachingStyleOptions, {
+  preferred_coaching_style: z.enum(preferredCoachingStyleOptionStrings, {
     required_error: "Preferred coaching style is required",
     invalid_type_error: "Preferred coaching style must be one of the allowed values",
   }),
