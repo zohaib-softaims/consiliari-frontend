@@ -11,6 +11,8 @@ import { preferredCoachingStyleOptions, accountabilityOptions, reactionToSetback
 import DetailedButtonGroupField from "../components/shared/DetailedButtonGroupField";
 import apiClient from "../utils/apiClient";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useUserStore } from "../store/userStore";
 
 const OnboardingWorkStylePage = () => {
   const workStyleState = useOnboardingStore((state) => state.onboardingState.career_blueprint.work_style);
@@ -18,6 +20,7 @@ const OnboardingWorkStylePage = () => {
   const setStep = useOnboardingStore((state) => state.setStep);
   const step = useOnboardingStore((state) => state.step);
   const onboardingState = useOnboardingStore((state) => state.onboardingState);
+  const { user, setUser } = useUserStore();
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
@@ -39,20 +42,18 @@ const OnboardingWorkStylePage = () => {
     try {
       const response = await apiClient.post("/onboarding/completed", onboardingState);
       if (response.success) {
+        setUser({ ...user, is_onboarding_completed: true });
         navigate("/");
-      } else {
-        console.error("API Error:", response.message);
       }
     } catch (error) {
       console.error("Failed to submit onboarding data:", error);
+      toast.error(error?.message || "Something went wrong");
     }
   };
 
   const handleBack = () => {
     setStep(step - 1);
   };
-
-  console.log("errors", errors);
 
   return (
     <div className="min-h-screen bg-white">
