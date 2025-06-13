@@ -28,18 +28,15 @@ export const jobInformationSchema = z.object({
     .max(200, "Current company name is too long"),
 
   industry: z.enum(industryOptions, {
-    required_error: "industry is required",
-    invalid_type_error: "Please select a valid industry",
+    errorMap: () => ({ message: "Please select an industry" }),
   }),
 
   time_in_current_role: z.enum(time_in_years, {
-    required_error: "Time in current role is required",
-    invalid_type_error: "Please select a valid time_in_current_role",
+    errorMap: () => ({ message: "Please select the time in recent role" }),
   }),
 
   employment_type: z.enum(employmentType, {
-    required_error: "Employment type is required",
-    invalid_type_error: "Please select a valid employment type",
+    errorMap: () => ({ message: "Please select the employment type" }),
   }),
 
   location: z
@@ -55,11 +52,10 @@ export const jobInformationSchema = z.object({
       required_error: "Total years of experience is required",
       invalid_type_error: "Total years of experience must be a number",
     })
-    .min(0.1, { message: "Experience must be atleast one month" }),
+    .min(0.1, { message: "Experience cannot be 0" }),
 
   promotion_before_that: z.enum(promotionBeforeThatOptions, {
-    required_error: "promotion_before_that is required",
-    invalid_type_error: "Please select a valid promotion_before_that",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
 
   last_promotion_time: z
@@ -87,8 +83,7 @@ const certificateSchema = z.object({
 
 export const studyInformationSchema = z.object({
   highest_level_of_education: z.enum(educationLevelOptions, {
-    required_error: "Education level is required",
-    invalid_type_error: "Please select a valid education level",
+    errorMap: () => ({ message: "Please select education level" }),
   }),
   field_of_study: z
     .string({
@@ -107,8 +102,7 @@ export const studyInformationSchema = z.object({
     .max(100, "Institute name is too long"),
 
   relevance_of_education: z.enum(relevanceOfEducationOptions, {
-    required_error: "Relevance is required",
-    invalid_type_error: "Please select a valid relevance level",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
   certificates_list: z.array(certificateSchema).min(0, "Certificates list cannot be negative"),
 });
@@ -151,8 +145,7 @@ export const skillsInformationSchema = z.object({
     .max(1000, "Performance recognition is too long"),
 
   current_role_experience: z.enum(currentRoleExperienceOptions, {
-    required_error: "Current role experience is required",
-    invalid_type_error: "Invalid role experience selection",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
 });
 

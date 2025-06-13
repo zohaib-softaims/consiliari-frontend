@@ -75,7 +75,7 @@ const useOnboardingStore = create(
           },
           work_style: {
             preferred_coaching_style: "",
-            accountability_methods: "",
+            accountability_methods: [],
             reaction_to_setback: "",
             excitement_about_consiliari: "",
           },

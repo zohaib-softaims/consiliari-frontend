@@ -90,10 +90,7 @@ const OnboardingWorkStylePage = () => {
       if (response.success) {
         setUser({ ...user, is_onboarding_completed: true });
         localStorage.removeItem("onboarding-data-storage");
-        toast.success("Onboarding completed successfully!");
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
+        navigate("/");
       } else {
         toast.error(response?.message || "Something went wrong");
       }

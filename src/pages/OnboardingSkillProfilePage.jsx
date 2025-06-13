@@ -59,6 +59,7 @@ const OnboardingSkillProfilePage = () => {
 
   const handleNext = () => {
     const fieldErrors = validateForm(skillsInformationSchema, skillsState);
+    console.log("errors", fieldErrors);
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       return;

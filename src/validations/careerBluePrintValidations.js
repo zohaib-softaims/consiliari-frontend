@@ -31,8 +31,7 @@ export const goalsSchema = z
     }),
 
     readiness_for_next_goal: z.enum(readinessForNextRoleOptions, {
-      required_error: "Readiness for next goal is required",
-      invalid_type_error: "Invalid readiness level",
+      errorMap: () => ({ message: "Please select an option" }),
     }),
 
     development_for_next_role: z
@@ -92,7 +91,7 @@ const personalAlignmentSchema = z.object({
 const seniorityPerceptionSchema = z.object({
   isTrue: z.boolean({
     required_error: "Seniority perception is required",
-    invalid_type_error: "Seniority perception status must be a boolean",
+    invalid_type_error: "Seniority perception is required",
   }),
 
   explaination: z
@@ -149,8 +148,7 @@ export const momentumSchema = z.object({
   seniority_perception: seniorityPerceptionSchema,
 
   industry_growth_trajectory_perception: z.enum(industryGrowthTrajectoryPerceptionOptions, {
-    required_error: "Industry growth trajectory perception is required",
-    invalid_type_error: "Invalid industry growth perception value",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
 });
 
@@ -198,8 +196,7 @@ export const marketViewSchema = z.object({
 
 export const workStyleSchema = z.object({
   preferred_coaching_style: z.enum(preferredCoachingStyleOptionStrings, {
-    required_error: "Preferred coaching style is required",
-    invalid_type_error: "Preferred coaching style must be one of the allowed values",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
 
   accountability_methods: z
@@ -212,8 +209,7 @@ export const workStyleSchema = z.object({
     .min(1, "At least one motivation and accountability method is required"),
 
   reaction_to_setback: z.enum(reactionToSetbackOptions, {
-    required_error: "Reaction to setback is required",
-    invalid_type_error: "Reaction must be one of the allowed options",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
 
   excitement_about_consiliari: z
@@ -325,22 +321,19 @@ const selfLeadershipAssessmentSchema = z.object({
 export const leadershipCapabilitiesSchema = z.object({
   is_manage_team: z.boolean({
     required_error: "Team management status is required",
-    invalid_type_error: "Team management status must be a boolean",
+    invalid_type_error: "Team management status is required",
   }),
 
   team_overall_performance: z.enum(teamPerformanceOptions, {
-    required_error: "Team overall performance is required",
-    invalid_type_error: "Must be one of the allowed performance levels",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
 
   perceive_as_a_leader: z.enum(perceiveAsALeaderOptions, {
-    required_error: "Leadership perception is required",
-    invalid_type_error: "Must be a valid leadership perception option",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
 
   relation_with_manager: z.enum(relationWithManagerOptions, {
-    required_error: "Relation with manager is required",
-    invalid_type_error: "Must be a valid option for relation with manager",
+    errorMap: () => ({ message: "Please select an option" }),
   }),
   self_leadership_assessment: selfLeadershipAssessmentSchema,
 });

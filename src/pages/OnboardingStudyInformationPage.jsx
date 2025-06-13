@@ -16,6 +16,7 @@ const OnboardingStudyInformationPage = () => {
   const setStep = useOnboardingStore((state) => state.setStep);
   const step = useOnboardingStore((state) => state.step);
   const [errors, setErrors] = useState({});
+  const [currentCertificate, setCurrentCertificate] = useState({ name: "", isActive: false }); // Local state for new certificate
 
   // Helper to update a single field in study_information
   const handleFieldChange = useCallback(
@@ -26,25 +27,29 @@ const OnboardingStudyInformationPage = () => {
     [updateSection]
   );
 
-  // Certificates list handlers
-  const handleCertificateChange = (idx, field, value) => {
-    const newList = [...(studyState.certificates_list || [])];
-    newList[idx] = {
-      ...(newList[idx] || { name: "", isActive: false }),
-      [field]: value,
-    };
-    handleFieldChange("certificates_list", newList);
-    setErrors((prev) => {
-      const newErrors = { ...prev };
-      if (newErrors.certificates_list && newErrors.certificates_list[idx]) {
-        newErrors.certificates_list[idx][field] = undefined;
-      }
-      return newErrors;
-    });
-  };
   const handleAddCertificate = () => {
-    handleFieldChange("certificates_list", [...(studyState.certificates_list || []), { name: "", isActive: false }]);
+    if (currentCertificate.name.trim() === "") {
+      setErrors((prev) => ({
+        ...prev,
+        currentCertificate: { name: "Certificate name is required" },
+      }));
+      return;
+    }
+
+    if ((studyState.certificates_list || []).length >= 10) {
+      setErrors((prev) => ({
+        ...prev,
+        certificates_list: "You cannot add more than 10 certificates.",
+      }));
+      return;
+    }
+
+    const newCertificates = [...(studyState.certificates_list || []), currentCertificate];
+    handleFieldChange("certificates_list", newCertificates);
+    setCurrentCertificate({ name: "", isActive: false }); // Clear input fields
+    setErrors((prev) => ({ ...prev, currentCertificate: undefined, certificates_list: undefined })); // Clear any previous errors related to adding
   };
+
   const handleRemoveCertificate = (idx) => {
     const newList = [...(studyState.certificates_list || [])];
     newList.splice(idx, 1);
@@ -52,7 +57,13 @@ const OnboardingStudyInformationPage = () => {
     setErrors((prev) => {
       const newErrors = { ...prev };
       if (newErrors.certificates_list) {
-        newErrors.certificates_list.splice(idx, 1);
+        // If the removed item was the last one, clear the array error
+        if (newList.length === 0) {
+          newErrors.certificates_list = undefined;
+        } else if (Array.isArray(newErrors.certificates_list)) {
+          // If it's an array of errors, remove the specific index error
+          newErrors.certificates_list.splice(idx, 1);
+        }
       }
       return newErrors;
     });
@@ -143,62 +154,55 @@ const OnboardingStudyInformationPage = () => {
               </p>
               <div className="space-y-2">
                 {(studyState.certificates_list || []).map((cert, idx) => (
-                  <div key={idx} className="border p-3 rounded-md border-[#e2e8f0]">
-                    <div className="flex justify-end">
-                      <button
-                        type="button"
-                        className="text-red-500 text-xs px-2 py-1 border border-red-200 rounded hover:bg-red-50"
-                        onClick={() => handleRemoveCertificate(idx)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor={`certificate-name-${idx}`} className="block text-sm text-[#020817] mb-1">
-                        Certificate Name
-                      </label>
-                      <input
-                        type="text"
-                        id={`certificate-name-${idx}`}
-                        className={`w-full bg-[#f8fafc] px-3 py-2 border ${
-                          errors.certificates_list && errors.certificates_list[idx] && errors.certificates_list[idx].name
-                            ? "border-red-500"
-                            : "border-[#e2e8f0]"
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
-                        placeholder="Enter certificate name here"
-                        value={cert.name}
-                        onChange={(e) => handleCertificateChange(idx, "name", e.target.value)}
-                      />
-                      {errors.certificates_list && errors.certificates_list[idx] && errors.certificates_list[idx].name && (
-                        <p className="text-red-500 text-xs mt-1">{errors.certificates_list[idx].name}</p>
-                      )}
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={`certificate-active-${idx}`}
-                        checked={cert.isActive}
-                        onChange={(e) => handleCertificateChange(idx, "isActive", e.target.checked)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor={`certificate-active-${idx}`} className="ml-2 block text-sm text-gray-900">
-                        Currently Active
-                      </label>
-                      {errors.certificates_list && errors.certificates_list[idx] && errors.certificates_list[idx].isActive && (
-                        <p className="text-red-500 text-xs mt-1 ml-2">{errors.certificates_list[idx].isActive}</p>
-                      )}
-                    </div>
+                  <div key={idx} className="flex items-center justify-between border p-3 rounded-md border-[#e2e8f0]">
+                    <p className="font-bold text-md text-[#5B5757]">
+                      {idx + 1}. {cert.name} - {cert.isActive ? "Active" : "Not Active"}
+                    </p>
+                    <button
+                      type="button"
+                      className="text-red-500 text-xs px-2 py-1 border border-red-200 rounded hover:bg-red-50"
+                      onClick={() => handleRemoveCertificate(idx)}
+                    >
+                      Remove
+                    </button>
                   </div>
                 ))}
+
+                {/* Input for new certificate */}
+                <div className="border p-3 rounded-md border-[#e2e8f0]">
+                  <div className="mb-3">
+                    <AuthInputField
+                      label="Certificate Name"
+                      placeholder="Enter certificate name here"
+                      type="text"
+                      name="new_certificate_name"
+                      value={currentCertificate.name}
+                      onChange={(e) => setCurrentCertificate((prev) => ({ ...prev, name: e.target.value }))}
+                      error={errors.currentCertificate?.name}
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="new_certificate_active"
+                      checked={currentCertificate.isActive}
+                      onChange={(e) => setCurrentCertificate((prev) => ({ ...prev, isActive: e.target.checked }))}
+                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="new_certificate_active" className="ml-2 block text-sm text-gray-900">
+                      Currently Active
+                    </label>
+                  </div>
+                </div>
                 {errors.certificates_list && !Array.isArray(errors.certificates_list) && (
                   <p className="text-red-500 text-xs mt-1">{errors.certificates_list}</p>
                 )}
                 <button
                   type="button"
-                  className="mt-2 px-4 py-2 rounded bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white text-sm"
+                  className="mt-4 px-4 py-2 rounded bg-gradient-to-r from-[#2F279C] to-[#766EE4] text-white text-sm"
                   onClick={handleAddCertificate}
                 >
-                  + Add another certificate
+                  Add Certificate
                 </button>
               </div>
             </div>
