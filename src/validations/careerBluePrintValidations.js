@@ -51,7 +51,7 @@ export const goalsSchema = z
       .min(1, "Challenges for goals cannot be empty")
       .max(1000, "Challenges for goals is too long"),
 
-    clarity_on_overcoming_obstacle: z
+    clarity_on_overcoming_obstacle: z.coerce
       .number({
         required_error: "Clarity rating is required",
         invalid_type_error: "Clarity must be a number between 1 and 5",
