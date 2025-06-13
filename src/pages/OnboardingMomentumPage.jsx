@@ -63,13 +63,13 @@ const OnboardingMomentumPage = () => {
         <div className="space-y-6 mt-8 mb-8">
           <div>
             <h3 className="text-xl font-bold text-[#766ee4] mb-1">Your Career Momentum & Engagement</h3>
-            <p className="text-sm text-[#737373] mb-6">This section assesses your current progression and future development</p>
+            <p className="text-sm text-[#737373] mb-6">This section looks at your career progression and proactive development.</p>
           </div>
 
           <div className="space-y-5">
             <AuthTextAreaField
               label="Growth in responsibility"
-              placeholder="Describe how your responsibilities and autonomy have grown in your current role or recent roles."
+              placeholder="Describe any increases in responsibility, scope, or leadership you have taken on in your current or recent roles."
               rows={5}
               name="growth_in_responsibility"
               value={momentumState.growth_in_responsibility}
@@ -78,8 +78,8 @@ const OnboardingMomentumPage = () => {
             />
 
             <AuthTextAreaField
-              label="Recent Development & Continuous Learning"
-              placeholder="Thinking about the last 6-12 months, what new skills, knowledge, or expertise have you developed? How have you applied these in your work?"
+              label="Recent Skill Development & Continuous Learning"
+              placeholder="Please list any significant courses, workshops, training programs, or substantial self-learning projects you have completed in the last 1-2 years to enhance your skills and knowledge relevant to your career."
               rows={5}
               name="recent_skill_development"
               value={momentumState.recent_skill_development}
@@ -89,7 +89,7 @@ const OnboardingMomentumPage = () => {
 
             <AuthTextAreaField
               label="Proactive Career Engagement Activities"
-              placeholder="What steps have you taken to actively manage your career progression (e.g., networking, mentorship, courses, conferences, informational interviews)?"
+              placeholder="How actively do you manage your career? Please provide examples of activities such as: Networking (attending industry events, informational interviews), Seeking mentorship or mentoring others, Regularly setting and reviewing career goals, Proactively seeking feedback, Utilizing career development resources."
               rows={5}
               name="proactive_career_activities"
               value={momentumState.proactive_career_activities}
@@ -99,7 +99,7 @@ const OnboardingMomentumPage = () => {
 
             <AuthTextAreaField
               label="Learning Agility & Adaptability"
-              placeholder="How do you adapt to significant changes in your professional environment or responsibilities? Provide an example of a time you quickly learned a new skill or adapted to a new challenge."
+              placeholder="Please describe any significant new skills you have learned or complex problems you have solved in the last 1-2 years that demonstrate your ability to learn and adapt."
               rows={5}
               name="learning_agility"
               value={momentumState.learning_agility}
@@ -109,7 +109,7 @@ const OnboardingMomentumPage = () => {
 
             <AuthTextAreaField
               label="Proactive learning example"
-              placeholder="Provide an example of your initiative and how it has lead you to new skills or a change in your behavior."
+              placeholder="Provide examples of how you proactively seek out new knowledge or adapt to changes in your field"
               rows={5}
               name="proactive_learning_example"
               value={momentumState.proactive_learning_example}
@@ -118,18 +118,19 @@ const OnboardingMomentumPage = () => {
             />
 
             <RatingSliderField
-              label="Personal Alignment Fulfilment"
+              label="Personal Alignment & Fulfilment"
               name="personal_alignment_fulfilment.rating"
+              description="On a scale of 1 (Low) to 5 (Very High), how well does your current role and career path align with your personal goals, values, and motivations?"
               value={momentumState.personal_alignment_fulfilment?.rating}
               onChange={(value) => handleNestedFieldChange("personal_alignment_fulfilment", "rating", value)}
               error={errors.personal_alignment_fulfilment?.rating}
-              minLabel="Completely unfulfilled"
-              maxLabel="Total clarity"
+              minLabel="Not at all Clear"
+              maxLabel="Very Clear"
             />
 
             <AuthTextAreaField
               label="Explanation for Alignment Rating"
-              placeholder="Describe how your current role or career path aligns with your personal values and aspirations."
+              placeholder="Briefly explain your rating for personal alignment, considering aspects like job satisfaction and sense of purpose."
               rows={5}
               name="personal_alignment_fulfilment.explaination"
               value={momentumState.personal_alignment_fulfilment?.explaination}
@@ -138,7 +139,8 @@ const OnboardingMomentumPage = () => {
             />
 
             <YesNoButtonGroupField
-              label="Are you perceived as highly skilled and technically proficient in your area of expertise within your team or broader organization?"
+              label="Job Title & Seniority Perception"
+              description="Do you feel your current job title and seniority level are appropriate for your years of experience and responsibilities, compared to industry norms?"
               name="seniority_perception.isTrue"
               value={momentumState.seniority_perception?.isTrue}
               onChange={(value) => handleNestedFieldChange("seniority_perception", "isTrue", value)}
@@ -147,7 +149,7 @@ const OnboardingMomentumPage = () => {
 
             <AuthTextAreaField
               label="Explanation for Seniority Perception"
-              placeholder="Explain why you are not perceived as highly skilled."
+              placeholder="Enter more details"
               rows={5}
               name="seniority_perception.explaination"
               value={momentumState.seniority_perception?.explaination}
@@ -156,7 +158,8 @@ const OnboardingMomentumPage = () => {
             />
 
             <ButtonGroupField
-              label="How do you perceive the future growth trajectory of your current industry or field?"
+              label="Industry Growth Trajectory Perception"
+              description="How would you describe the growth trajectory of your current industry or field?"
               name="industry_growth_trajectory_perception"
               value={momentumState.industry_growth_trajectory_perception}
               options={industryGrowthTrajectoryPerceptionOptions}

@@ -57,7 +57,7 @@ const useOnboardingStore = create(
             learning_agility: "",
             proactive_learning_example: "",
             personal_alignment_fulfilment: {
-              rating: "",
+              rating: 1,
               explaination: "",
             },
             seniority_perception: {

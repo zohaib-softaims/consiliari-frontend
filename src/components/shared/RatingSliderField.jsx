@@ -19,7 +19,7 @@ function RatingSliderField({
     <div>
       <label className={`block text-sm font-bold text-[#020817] ${description ? "mb-1" : "mb-2"}`}>{label}</label>
       {description && <p className="text-xs text-[#737373] mb-2">{description}</p>}
-      <div className="relative mb-10">
+      <div className="relative mb-7">
         <input
           type="range"
           id={name}
@@ -80,7 +80,7 @@ function RatingSliderField({
         `}</style>
 
         {/* Numbered Markers */}
-        <div className="absolute w-full flex justify-between -bottom-2 text-sm">
+        <div className="absolute w-full flex justify-between top-7 text-sm ">
           {rangeMarks.map((mark) => (
             <span
               key={mark}
@@ -94,7 +94,7 @@ function RatingSliderField({
       </div>
 
       {/* Min/Max Labels */}
-      <div className="flex justify-between items-start text-xs font-medium mt-2">
+      <div className=" flex justify-between items-start text-xs font-medium">
         <span className="text-sm text-[#737373]">{minLabel}</span>
         <span className="text-sm text-[#737373]">{maxLabel}</span>
       </div>
