@@ -1,18 +1,17 @@
 import React from "react";
 
-function SimpleSliderField({ label, name, value, onChange, error, min = 1, max = 100, step = 1, required = false }) {
+function SimpleSliderField({ label, name, value, onChange, error, min = 1, max = 100, step = 1, description = "" }) {
   const percentage = ((value - min) / (max - min)) * 100;
 
   return (
     <div>
-      <label htmlFor={name} className="block text-sm font-bold text-[#020817] mb-1">
+      <label htmlFor={name} className=" text-sm font-bold text-[#020817] mb-1">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
+      <span className="ml-2 text-xs text-[#737373]">{description}</span>
 
-      <div className="relative mb-6">
-        {/* Display current value above thumb */}
-        <div className="absolute text-sm font-semibold text-[#2F279C] -top-6 transform -translate-x-1/2" style={{ left: `${percentage}%` }}>
+      <div className="relative mb-2">
+        <div className="absolute text-sm font-semibold text-[#2F279C] top-6 transform -translate-x-1/2" style={{ left: `${percentage}%` }}>
           {value}
         </div>
 
@@ -75,9 +74,15 @@ function SimpleSliderField({ label, name, value, onChange, error, min = 1, max =
       </div>
 
       {/* Min/Max Labels */}
-      <div className="flex justify-between items-start text-xs font-medium mt-1">
-        <span className="text-sm text-[#737373]">{min}</span>
-        <span className="text-sm text-[#737373]">{max}</span>
+      <div className="flex justify-between items-start text-xs font-medium">
+        <div>
+          <p className="text-sm font-bold">{min}</p>
+          <p className="text-sm text-[#737373]">Not Confident</p>
+        </div>
+        <div>
+          <p className="text-sm font-bold">{max}</p>
+          <p className="text-sm text-[#737373]">Highly Confident</p>
+        </div>
       </div>
 
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}

@@ -11,7 +11,6 @@ function RatingSliderField({
   step = 1,
   minLabel = "Low",
   maxLabel = "High",
-  required = false,
   description = "",
 }) {
   const rangeMarks = Array.from({ length: max - min + 1 }, (_, i) => min + i);

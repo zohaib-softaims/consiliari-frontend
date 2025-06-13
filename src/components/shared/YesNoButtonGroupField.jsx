@@ -1,9 +1,10 @@
 import React from "react";
 
-function YesNoButtonGroupField({ label, value, onChange, error }) {
+function YesNoButtonGroupField({ label, value, onChange, error, description }) {
   return (
     <div>
-      <label className="block text-sm font-bold text-[#020817] mb-1">{label}</label>
+      <label className={`block text-sm font-bold text-[#020817] ${description ? "mb-1" : "mb-2"}`}>{label}</label>
+      {description && <p className="text-xs text-[#737373] mb-2">{description}</p>}
       <div className="grid grid-cols-2 gap-4">
         <button
           type="button"

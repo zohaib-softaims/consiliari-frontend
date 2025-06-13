@@ -62,13 +62,14 @@ const OnboardingLeadershipPage = () => {
         <div className="space-y-6 mt-8 mb-8">
           <div>
             <h3 className="text-xl font-bold text-[#766ee4] mb-1">Leadership & Capabilities</h3>
-            <p className="text-sm text-[#737373] mb-6">This section assesses your leadership potential and capabilities</p>
+            <p className="text-sm text-[#737373] mb-6">This section focuses on your demonstrated Leadership capabilities</p>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-7">
             {/* Manage Team Field */}
             <YesNoButtonGroupField
-              label="Do you currently lead and manage a team?"
+              label="Leadership and Team Dynamics:"
+              description="Do you currently manage or lead a team?"
               name="is_manage_team"
               value={leadershipCapabilitiesState.is_manage_team}
               onChange={(value) => handleFieldChange("is_manage_team", value)}
@@ -78,7 +79,7 @@ const OnboardingLeadershipPage = () => {
             {/* Team Performance Field */}
 
             <ButtonGroupField
-              label="What is the overall performance of your team?"
+              label="How would you rate your team’s overall performance?"
               name="team_overall_performance"
               value={leadershipCapabilitiesState.team_overall_performance}
               options={teamPerformanceOptions}
@@ -88,7 +89,7 @@ const OnboardingLeadershipPage = () => {
 
             {/* Perceive as a Leader Field */}
             <ButtonGroupField
-              label="How do you perceive yourself as a leader?"
+              label="How do you think your key stakeholders or partners perceive you as a leader?"
               name="perceive_as_a_leader"
               value={leadershipCapabilitiesState.perceive_as_a_leader}
               options={perceiveAsALeaderOptions}
@@ -99,7 +100,8 @@ const OnboardingLeadershipPage = () => {
 
             {/* Relation with Manager Field */}
             <ButtonGroupField
-              label="Describe your relationship with your manager."
+              label="Managerial Relationship:"
+              description="How would you characterize your relationship with your current manager?"
               name="relation_with_manager"
               value={leadershipCapabilitiesState.relation_with_manager}
               options={relationWithManagerOptions}
@@ -109,12 +111,16 @@ const OnboardingLeadershipPage = () => {
             />
 
             {/* Self-Leadership Assessment Section */}
-            <h3 className="text-xl font-bold text-[#766ee4] mb-1">Self-Leadership Assessment</h3>
-            <p className="text-sm text-[#737373] mb-6">Rate your capabilities in the following areas (1-5 scale)</p>
+            <p className={`block text-sm font-bold text-[#020817] mb-1`}>Self-Assessment of Leadership Skills:</p>
+            <p className="text-sm text-[#737373] mb-6">
+              Rate your confidence in demonstrating each leadership capability regularly on a scale from 0 (Not confident) to 100 (Highly
+              confident).
+            </p>
 
             <SimpleSliderField
               key="self_awareness"
               label="Self Awareness"
+              description="(Openness to new perspectives and feedback):"
               name="self_awareness"
               value={leadershipCapabilitiesState.self_leadership_assessment.self_awareness}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "self_awareness", value)}
@@ -124,6 +130,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="effective_communication"
               label="Effective Communication"
+              description="(Clear, courageous, and collaborative interactions):"
               name="effective_communication"
               value={leadershipCapabilitiesState.self_leadership_assessment.effective_communication}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "effective_communication", value)}
@@ -133,6 +140,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="interpersonal_relations"
               label="Interpersonal Relations"
+              description="(Building strong, collaborative relationships):"
               name="interpersonal_relations"
               value={leadershipCapabilitiesState.self_leadership_assessment.interpersonal_relations}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "interpersonal_relations", value)}
@@ -142,6 +150,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="vision"
               label="Vision"
+              description="(Setting clear, data-informed goals):"
               name="vision"
               value={leadershipCapabilitiesState.self_leadership_assessment.vision}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "vision", value)}
@@ -151,6 +160,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="time_management"
               label="Time Management"
+              description="(Effectively prioritizing tasks based on data):"
               name="time_management"
               value={leadershipCapabilitiesState.self_leadership_assessment.time_management}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "time_management", value)}
@@ -160,6 +170,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="decision_making"
               label="Decision Making"
+              description="(Leading decisively and proactively):"
               name="decision_making"
               value={leadershipCapabilitiesState.self_leadership_assessment.decision_making}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "decision_making", value)}
@@ -169,6 +180,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="developing_team_members"
               label="Developing Team Members"
+              description="(Supporting team growth and collaboration):"
               name="developing_team_members"
               value={leadershipCapabilitiesState.self_leadership_assessment.developing_team_members}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "developing_team_members", value)}
@@ -178,6 +190,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="team_performance_leadership"
               label="Team Performance Leadership"
+              description="(Driving team effectiveness and achievement):"
               name="team_performance_leadership"
               value={leadershipCapabilitiesState.self_leadership_assessment.team_performance_leadership}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "team_performance_leadership", value)}
@@ -187,6 +200,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="conflict_resolution"
               label="Conflict Resolution"
+              description="(Effectively managing and resolving disputes):"
               name="conflict_resolution"
               value={leadershipCapabilitiesState.self_leadership_assessment.conflict_resolution}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "conflict_resolution", value)}
@@ -196,6 +210,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="strategic_thinking"
               label="Strategic Thinking"
+              description="(Applying analytical insights to plan strategically):"
               name="strategic_thinking"
               value={leadershipCapabilitiesState.self_leadership_assessment.strategic_thinking}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "strategic_thinking", value)}
@@ -205,6 +220,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="organizational_collaboration"
               label="Organizational Collaboration"
+              description="(Engaging effectively across the organization):"
               name="organizational_collaboration"
               value={leadershipCapabilitiesState.self_leadership_assessment.organizational_collaboration}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "organizational_collaboration", value)}
@@ -214,6 +230,7 @@ const OnboardingLeadershipPage = () => {
             <SimpleSliderField
               key="executive_presence"
               label="Executive Presence"
+              description="(Confident and influential professional presence):"
               name="executive_presence"
               value={leadershipCapabilitiesState.self_leadership_assessment.executive_presence}
               onChange={(value) => handleNestedFieldChange("self_leadership_assessment", "executive_presence", value)}
