@@ -1,6 +1,5 @@
 import { z } from "zod";
 import {
-  accountabilityOptions,
   industryGrowthTrajectoryPerceptionOptions,
   perceiveAsALeaderOptions,
   preferredCoachingStyleOptionStrings,
@@ -17,9 +16,7 @@ export const goalsSchema = z
         required_error: "Short term goal is required",
         invalid_type_error: "Short term goal must be a string",
       })
-      .max(1000, "Short term goal is too long")
-      .optional(), 
-
+      .max(1000, "Short term goal is too long"),
     long_term_goal: z
       .string({
         required_error: "Long term goal is required",
@@ -205,10 +202,14 @@ export const workStyleSchema = z.object({
     invalid_type_error: "Preferred coaching style must be one of the allowed values",
   }),
 
-  accountability_methods: z.enum(accountabilityOptions, {
-    required_error: "Accountability method is required",
-    invalid_type_error: "Must be one of the allowed accountability methods",
-  }),
+  accountability_methods: z
+    .array(
+      z.string({
+        required_error: "Motivation and accountability method is required",
+        invalid_type_error: "Motivation and accountability method must be a string",
+      })
+    )
+    .min(1, "At least one motivation and accountability method is required"),
 
   reaction_to_setback: z.enum(reactionToSetbackOptions, {
     required_error: "Reaction to setback is required",

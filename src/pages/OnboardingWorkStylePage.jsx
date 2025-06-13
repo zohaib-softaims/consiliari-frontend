@@ -13,6 +13,8 @@ import apiClient from "../utils/apiClient";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUserStore } from "../store/userStore";
+import MultiSelectButtonGroupField from "../components/shared/MultiSelectButtonGroupField";
+import AuthInputField from "../components/shared/AuthInputField";
 
 const OnboardingWorkStylePage = () => {
   const workStyleState = useOnboardingStore((state) => state.onboardingState.career_blueprint.work_style);
@@ -23,6 +25,46 @@ const OnboardingWorkStylePage = () => {
   const { user, setUser } = useUserStore();
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  const [selectedPredefinedMethods, setSelectedPredefinedMethods] = useState(() => {
+    const initialMethods = workStyleState.accountability_methods || [];
+    return initialMethods.filter((method) => accountabilityOptions.includes(method));
+  });
+
+  const [otherMotivationMethod, setOtherMotivationMethod] = useState(() => {
+    const initialMethods = workStyleState.accountability_methods || [];
+    const otherValue = initialMethods.find((method) => !accountabilityOptions.includes(method));
+    return otherValue || "";
+  });
+
+  const updateMotivationMethodsInStore = useCallback(
+    (predefined, other) => {
+      let combinedValue = [...predefined];
+      if (other.trim() !== "") {
+        combinedValue.push(other.trim());
+      }
+      updateSection(`career_blueprint.work_style.accountability_methods`, () => combinedValue);
+      setErrors((prev) => ({ ...prev, accountability_methods: "" }));
+    },
+    [updateSection]
+  );
+
+  const handlePredefinedMethodsChange = useCallback(
+    (newPredefinedSelections) => {
+      setSelectedPredefinedMethods(newPredefinedSelections);
+      updateMotivationMethodsInStore(newPredefinedSelections, otherMotivationMethod);
+    },
+    [updateMotivationMethodsInStore, otherMotivationMethod]
+  );
+
+  const handleOtherMotivationMethodChange = useCallback(
+    (e) => {
+      const newValue = e.target.value;
+      setOtherMotivationMethod(newValue);
+      updateMotivationMethodsInStore(selectedPredefinedMethods, newValue);
+    },
+    [updateMotivationMethodsInStore, selectedPredefinedMethods]
+  );
 
   const handleFieldChange = useCallback(
     (field, value) => {
@@ -85,15 +127,28 @@ const OnboardingWorkStylePage = () => {
             isMultiSelect={false}
           />
 
-          <ButtonGroupField
+          <MultiSelectButtonGroupField
             label="Motivation & Accountability Methods:"
             description="What helps you best stay motivated and accountable for your goals? (Select all that apply)"
             options={accountabilityOptions}
             name="accountability_methods"
-            value={workStyleState.accountability_methods}
-            onChange={(value) => handleFieldChange("accountability_methods", value)}
+            value={selectedPredefinedMethods}
+            onChange={handlePredefinedMethodsChange}
             error={errors.accountability_methods}
-            isMultiSelect={true}
+          />
+
+          <AuthInputField
+            label="Other (Motivation & Accountability Methods)"
+            placeholder="e.g., Self-reflection, mentorship, etc."
+            type="text"
+            name="other_accountability_method"
+            value={otherMotivationMethod}
+            onChange={handleOtherMotivationMethodChange}
+            // All validation for motivation_and_accountability_methods (including 'other')
+            // is handled by the `workStyleSchema` in `careerBluePrintValidations.js`.
+            // The error prop here will display any error message from the schema validation
+            // related to the overall motivation_and_accountability_methods array.
+            error={errors.accountability_methods}
           />
 
           <ButtonGroupField

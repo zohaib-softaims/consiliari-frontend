@@ -29,6 +29,7 @@ const OnboardingGoalsPage = () => {
 
   const handleNext = () => {
     const fieldErrors = validateForm(goalsSchema, goalsState);
+    console.log("errors", fieldErrors);
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       return;
