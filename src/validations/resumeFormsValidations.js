@@ -131,8 +131,8 @@ export const skillsInformationSchema = z.object({
         }),
       })
     )
-    .min(1, "At least one skill is required")
-    .max(10, "Maximum 10 skills allowed"),
+    .min(5, "At least 5 skills are required")
+    .max(7, "Maximum 7 skills allowed"),
 
   achievements: z
     .string({

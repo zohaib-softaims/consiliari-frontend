@@ -13,7 +13,7 @@ function AuthTextAreaField({ label, name, value, onChange, error, placeholder = 
         onChange={onChange}
         required={required}
         rows={rows}
-        className={`w-full bg-[#f8fafc] px-3 py-2 border ${
+        className={`w-full bg-[#f8fafc] px-3 py-2 placeholder-[#D0D0D0] placeholder:text-sm border ${
           error ? "border-red-500" : "border-[#e2e8f0]"
         } rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent`}
         placeholder={placeholder}

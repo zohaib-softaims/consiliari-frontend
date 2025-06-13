@@ -17,6 +17,7 @@ const OnboardingSkillProfilePage = () => {
   const setStep = useOnboardingStore((state) => state.setStep);
   const step = useOnboardingStore((state) => state.step);
   const [errors, setErrors] = useState({});
+  const [currentSkill, setCurrentSkill] = useState({ name: "", proficiency: "" }); // Local state for the new skill input
 
   // Helper to update a single field in skills_information
   const handleFieldChange = useCallback(
@@ -28,37 +29,32 @@ const OnboardingSkillProfilePage = () => {
   );
 
   // Key Professional Skills handlers (top_skills is an array of { name: "", proficiency: "" })
-  const handleSkillChange = (idx, field, value) => {
-    const newSkills = [...(skillsState.top_skills || [])];
-    newSkills[idx] = {
-      ...(newSkills[idx] || { name: "", proficiency: "" }),
-      [field]: value,
-    };
-    handleFieldChange("top_skills", newSkills);
-    setErrors((prev) => {
-      const newErrors = { ...prev };
-      if (newErrors.top_skills && newErrors.top_skills[idx]) {
-        newErrors.top_skills[idx][field] = undefined;
-      }
-      return newErrors;
-    });
+  const handleCurrentSkillChange = (field, value) => {
+    setCurrentSkill((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: undefined })); // Clear error for current skill input
   };
 
   const handleAddSkill = () => {
-    handleFieldChange("top_skills", [...(skillsState.top_skills || []), { name: "", proficiency: "" }]);
+    if ((skillsState.top_skills || []).length >= 7) {
+      setErrors((prev) => ({
+        ...prev,
+        top_skills: "You cannot add more than 7 skills",
+      }));
+      return;
+    }
+    if (currentSkill.name && currentSkill.proficiency) {
+      const newSkills = [...(skillsState.top_skills || []), currentSkill];
+      handleFieldChange("top_skills", newSkills);
+      setCurrentSkill({ name: "", proficiency: "" });
+      setErrors((prev) => ({ ...prev, top_skills: "" }));
+    }
+    return;
   };
 
   const handleRemoveSkill = (idx) => {
     const newSkills = [...(skillsState.top_skills || [])];
     newSkills.splice(idx, 1);
     handleFieldChange("top_skills", newSkills);
-    setErrors((prev) => {
-      const newErrors = { ...prev };
-      if (newErrors.top_skills) {
-        newErrors.top_skills.splice(idx, 1);
-      }
-      return newErrors;
-    });
   };
 
   const handleNext = () => {
@@ -101,35 +97,13 @@ const OnboardingSkillProfilePage = () => {
                 What are your top 5-7 key professional skills? (e.g., Project Management, Python, Digital Marketing, Leadership, Data
                 Analysis)
               </p>
-              <div className="space-y-2">
+
+              <div className="space-y-2 mb-4">
                 {(skillsState.top_skills || []).map((skill, idx) => (
-                  <div key={idx} className="flex items-end gap-2">
-                    <div className="flex-grow">
-                      <label className="block text-sm text-[#020817] mb-1">{idx + 1}. Skill Name</label>
-                      <input
-                        type="text"
-                        className="w-full bg-[#f8fafc] px-3 py-2 border border-[#e2e8f0] rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder="Enter your skill here"
-                        value={skill.name}
-                        onChange={(e) => handleSkillChange(idx, "name", e.target.value)}
-                      />
-                      {errors.top_skills && errors.top_skills[idx] && errors.top_skills[idx].name && (
-                        <p className="text-red-500 text-xs mt-1">{errors.top_skills[idx].name}</p>
-                      )}
-                    </div>
-                    <div className="w-1/3">
-                      <SelectInputField
-                        label="Proficiency"
-                        name={`proficiency-${idx}`}
-                        placeholder="Select Proficiency"
-                        value={skill.proficiency}
-                        options={proficiencyLevelOptions}
-                        onChange={(value) => handleSkillChange(idx, "proficiency", value)}
-                      />
-                      {errors.top_skills && errors.top_skills[idx] && errors.top_skills[idx].proficiency && (
-                        <p className="text-red-500 text-xs mt-1">{errors.top_skills[idx].proficiency}</p>
-                      )}
-                    </div>
+                  <div key={idx} className="flex items-center justify-between">
+                    <p className="font-bold text-md text-[#5B5757]">
+                      {idx + 1}. {skill.name} - {skill.proficiency}
+                    </p>
                     <button
                       type="button"
                       className="text-red-500 text-xs px-2 py-1 border border-red-200 rounded hover:bg-red-50"
@@ -139,19 +113,50 @@ const OnboardingSkillProfilePage = () => {
                     </button>
                   </div>
                 ))}
-                {errors.top_skills && !Array.isArray(errors.top_skills) && (
-                  <p className="text-red-500 text-xs mt-1">{errors.top_skills}</p>
-                )}
-                <button type="button" className="mt-2 px-4 py-2 rounded bg-[#766ee4] text-white text-sm" onClick={handleAddSkill}>
-                  + Add Skill
+              </div>
+
+              {/* Input for new skill */}
+              <div className="flex items-end gap-2">
+                <div className="flex-grow">
+                  <AuthInputField
+                    label="Skill Name"
+                    placeholder="Enter your skill here"
+                    type="text"
+                    name="new_skill_name"
+                    value={currentSkill.name}
+                    onChange={(e) => handleCurrentSkillChange("name", e.target.value)}
+                    error={errors.currentSkill?.name}
+                  />
+                </div>
+                <div className="w-1/3">
+                  <SelectInputField
+                    label="Proficiency"
+                    name="new_skill_proficiency"
+                    placeholder="Select Proficiency"
+                    value={currentSkill.proficiency}
+                    options={proficiencyLevelOptions}
+                    onChange={(value) => handleCurrentSkillChange("proficiency", value)}
+                    error={errors.currentSkill?.proficiency}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-row items-end justify-end mt-4">
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded-lg border border-[#2F279C] text-[#2F279C] text-sm"
+                  onClick={handleAddSkill}
+                >
+                  Add Skill
                 </button>
               </div>
+
+              {errors.top_skills && !Array.isArray(errors.top_skills) && <p className="text-red-500 text-xs mt-1">{errors.top_skills}</p>}
             </div>
 
             {/* Quantifiable Achievements */}
             <AuthTextAreaField
               label="Quantifiable Achievements (2-3 examples)"
-              placeholder="Please describe 2-3 of your most significant quantifiable achievements in your current or recent roles (within the last 3-5 years). For each, specify the outcome and your role in it (e.g., 'Led a project that increased sales by 15% in 6 months')"
+              placeholder={`Please describe 2-3 of your most significant quantifiable achievements in your current or recent roles (within the last 3-5 years). For each, specify the outcome and your role in it (e.g., "Led a project that increased sales by 15% in 6 months)`}
               rows={5}
               name="achievements"
               value={skillsState.achievements}
@@ -162,7 +167,7 @@ const OnboardingSkillProfilePage = () => {
             {/* Performance Recognition */}
             <AuthTextAreaField
               label="Performance Recognition"
-              placeholder="How have you received any formal recognition for your performance in the last 3-5 years? (e.g., awards, promotions, rise in pay, bonuses, consistently high ratings, significant increases?) Please provide details."
+              placeholder={`Have you received any formal recognition for your performance in the last 3-5 years (e.g., awards, promotions due to performance, consistently high ratings, significant bonuses)? Please provide details.`}
               rows={5}
               name="performance_recognition"
               value={skillsState.performance_recognition}
@@ -178,13 +183,18 @@ const OnboardingSkillProfilePage = () => {
               options={currentRoleExperienceOptions}
               onChange={(value) => handleFieldChange("current_role_experience", value)}
               error={errors.current_role_experience}
+              description="Which description best captures your current professional experience?"
               required
             />
           </div>
         </div>
         <div className="flex justify-between mb-8">
-          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack}>Back</button>
-          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>Next</button>
+          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack}>
+            Back
+          </button>
+          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>
+            Next
+          </button>
         </div>
       </div>
     </div>
