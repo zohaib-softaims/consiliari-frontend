@@ -9,6 +9,7 @@ import { onboardingStep2 } from "../constants/onboardingProgressBarSteps";
 import { goalsSchema } from "../validations/careerBluePrintValidations";
 import { validateForm } from "../utils/validateForm";
 import { readinessForNextRoleOptions } from "../constants/onboardingData";
+import ToggleSwitch from "../components/shared/ToggleSwitch";
 
 const OnboardingGoalsPage = () => {
   const goalsState = useOnboardingStore((state) => state.onboardingState.career_blueprint.goals);
@@ -62,9 +63,9 @@ const OnboardingGoalsPage = () => {
 
           <div className="space-y-5">
             {/* Short Term Goal */}
-            {!goalsState.no_goals && (
+            <div className="relative">
               <AuthTextAreaField
-                label="Short Term Goal (next 6-12 months)"
+                label="Short Term Career Goal (next 6-12 months)"
                 placeholder="Thinking about the next 6-12 months, what is the single most important career outcome you want to achieve? Be as specific as possible."
                 rows={5}
                 name="short_term_goal"
@@ -72,35 +73,29 @@ const OnboardingGoalsPage = () => {
                 onChange={(e) => handleFieldChange("short_term_goal", e.target.value)}
                 error={errors.short_term_goal}
               />
-            )}
-
-            {/* I don't have goals right now checkbox */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="no_goals"
-                name="no_goals"
-                checked={goalsState.no_goals}
-                onChange={(e) => handleFieldChange("no_goals", e.target.checked)}
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="no_goals" className="ml-2 block text-sm text-gray-900">
-                I don't have goals right and need guidance
-              </label>
+              {goalsState.no_goals && (
+                <div className="absolute inset-0 bg-white/50 pointer-events-auto cursor-not-allowed z-10 rounded-md"></div>
+              )}
             </div>
 
+            {/* I don't have goals checkbox */}
+            <ToggleSwitch
+              label="I don't have goals right and need guidance"
+              name="no_goals"
+              checked={goalsState.no_goals}
+              onChange={(e) => handleFieldChange("no_goals", e.target.checked)}
+            />
+
             {/* Long Term/Career future */}
-            {!goalsState.no_goals && (
-              <AuthTextAreaField
-                label="Long Term Career future (3-5 years)"
-                placeholder="Describe your long-term career vision for the next 3-5 years. What kind of work are you doing? What impact are you making? What does success feel like for you?"
-                rows={5}
-                name="long_term_goal"
-                value={goalsState.long_term_goal}
-                onChange={(e) => handleFieldChange("long_term_goal", e.target.value)}
-                error={errors.long_term_goal}
-              />
-            )}
+            <AuthTextAreaField
+              label="Long Term Career future (3-5 years)"
+              placeholder="Describe your long-term career vision for the next 3-5 years. What kind of work are you doing? What impact are you making? What does success feel like for you?"
+              rows={5}
+              name="long_term_goal"
+              value={goalsState.long_term_goal}
+              onChange={(e) => handleFieldChange("long_term_goal", e.target.value)}
+              error={errors.long_term_goal}
+            />
 
             {/* Readiness for Next Role */}
             <ButtonGroupField
@@ -139,6 +134,7 @@ const OnboardingGoalsPage = () => {
             <RatingSliderField
               label="Clarity on overcoming obstacles"
               name="clarity_on_overcoming_obstacle"
+              description="On a scale of 1 (Not at all clear) to 5 (Very clear), how clear are you on the steps you need to take to overcome your main obstacle?"
               value={goalsState.clarity_on_overcoming_obstacle}
               onChange={(value) => handleFieldChange("clarity_on_overcoming_obstacle", value)}
               error={errors.clarity_on_overcoming_obstacle}
@@ -152,7 +148,7 @@ const OnboardingGoalsPage = () => {
             Back
           </button>
           <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>
-            Submit
+            Next
           </button>
         </div>
       </div>

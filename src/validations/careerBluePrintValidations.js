@@ -18,7 +18,7 @@ export const goalsSchema = z
         invalid_type_error: "Short term goal must be a string",
       })
       .max(1000, "Short term goal is too long")
-      .optional(), // Make it optional at first
+      .optional(), 
 
     long_term_goal: z
       .string({
@@ -26,7 +26,7 @@ export const goalsSchema = z
         invalid_type_error: "Long term goal must be a string",
       })
       .max(1000, "Long term goal is too long")
-      .optional(),
+      .min(1, "Long term goal is required"),
 
     no_goals: z.boolean({
       required_error: "No goals selection is required",
@@ -69,13 +69,6 @@ export const goalsSchema = z
           code: z.ZodIssueCode.custom,
           path: ["short_term_goal"],
           message: "Short term goal is required",
-        });
-      }
-      if (!data.long_term_goal || data.long_term_goal.trim() === "") {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["long_term_goal"],
-          message: "Long term goal is required",
         });
       }
     }

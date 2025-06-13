@@ -12,15 +12,14 @@ function RatingSliderField({
   minLabel = "Low",
   maxLabel = "High",
   required = false,
+  description = "",
 }) {
   const rangeMarks = Array.from({ length: max - min + 1 }, (_, i) => min + i);
 
   return (
     <div>
-      <label htmlFor={name} className="block text-sm font-bold text-[#020817] mb-1">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
+      <label className={`block text-sm font-bold text-[#020817] ${description ? "mb-1" : "mb-2"}`}>{label}</label>
+      {description && <p className="text-xs text-[#737373] mb-2">{description}</p>}
       <div className="relative mb-10">
         <input
           type="range"
