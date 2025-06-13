@@ -67,7 +67,7 @@ const OnboardingMarketViewPage = () => {
             <AuthCurrencyInputField
               label="Annual Bonus Currency (Optional)"
               type="number"
-              placeholder="Enter your total annual compensation"
+              placeholder="Enter your annual bonus"
               name="annual_bonus"
               value={marketState.annual_bonus}
               onChange={(e) => handleFieldChange("annual_bonus", e.target.value)}
@@ -76,7 +76,7 @@ const OnboardingMarketViewPage = () => {
             <AuthCurrencyInputField
               label="Equity Currency (Optional, if salary provided):"
               type="number"
-              placeholder="Enter your total annual compensation"
+              placeholder="Enter your equity"
               name="equity"
               value={marketState.equity}
               onChange={(e) => handleFieldChange("equity", e.target.value)}
@@ -107,7 +107,7 @@ const OnboardingMarketViewPage = () => {
             Back
           </button>
           <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>
-            Submit
+            Next
           </button>
         </div>
       </div>
