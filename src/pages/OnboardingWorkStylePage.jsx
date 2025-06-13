@@ -26,6 +26,9 @@ const OnboardingWorkStylePage = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Add loading state for submission
+  const [loading, setLoading] = useState(false);
+
   const [selectedPredefinedMethods, setSelectedPredefinedMethods] = useState(() => {
     const initialMethods = workStyleState.accountability_methods || [];
     return initialMethods.filter((method) => accountabilityOptions.includes(method));
@@ -82,14 +85,22 @@ const OnboardingWorkStylePage = () => {
     }
     setErrors({});
     try {
+      setLoading(true);
       const response = await apiClient.post("/onboarding/completed", onboardingState);
       if (response.success) {
         setUser({ ...user, is_onboarding_completed: true });
-        navigate("/");
+        localStorage.removeItem("onboarding-data-storage");
+        toast.success("Onboarding completed successfully!");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      } else {
+        toast.error(response?.message || "Something went wrong");
       }
     } catch (error) {
-      console.error("Failed to submit onboarding data:", error);
       toast.error(error?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -173,11 +184,11 @@ const OnboardingWorkStylePage = () => {
           />
         </div>
         <div className="flex justify-between mb-8">
-          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack}>
+          <button className="px-6 py-2 rounded bg-gray-200 text-gray-700" onClick={handleBack} disabled={loading}>
             Back
           </button>
-          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext}>
-            Submit
+          <button className="px-6 py-2 rounded bg-[#2f279c] text-white" onClick={handleNext} disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
           </button>
         </div>
       </div>
